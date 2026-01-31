@@ -1,0 +1,95 @@
+{"_s":"kv","desc":"zero-width space in key","key":"hello\u200Bworld","value":{"String":"zwsp-key"}}
+{"_s":"kv","desc":"BOM in key","key":"\uFEFFbom-key","value":{"String":"bom-value"}}
+{"_s":"kv","desc":"RTL mark in key","key":"price\u200F100","value":{"String":"rtl-key"}}
+{"_s":"kv","desc":"null char in key","key":"before\u0000after","value":{"String":"null-in-key"}}
+{"_s":"kv","desc":"tab in key","key":"col1\tcol2","value":{"String":"tab-key"}}
+{"_s":"kv","desc":"newline in key","key":"line1\nline2","value":{"String":"newline-key"}}
+{"_s":"kv","desc":"carriage return in key","key":"line1\r\nline2","value":{"String":"crlf-key"}}
+{"_s":"kv","desc":"key is only whitespace","key":"   ","value":{"String":"whitespace-key"}}
+{"_s":"kv","desc":"key is single space","key":" ","value":{"String":"space-key"}}
+{"_s":"kv","desc":"key looks like SQL injection","key":"'; DROP TABLE kv; --","value":{"String":"sql-inject"}}
+{"_s":"kv","desc":"key looks like XSS","key":"<script>alert('xss')</script>","value":{"String":"xss-key"}}
+{"_s":"kv","desc":"key looks like path traversal","key":"../../../etc/passwd","value":{"String":"path-traversal"}}
+{"_s":"kv","desc":"key is valid JSON","key":"{\"nested\":true}","value":{"String":"json-key"}}
+{"_s":"kv","desc":"key looks like URL","key":"https://evil.com/callback?token=abc","value":{"String":"url-key"}}
+{"_s":"kv","desc":"key with many colons","key":"a:b:c:d:e:f:g:h:i:j","value":{"String":"colon-key"}}
+{"_s":"kv","desc":"key with dots","key":"a.b.c.d.e","value":{"String":"dot-key"}}
+{"_s":"kv","desc":"key with slashes","key":"path/to/some/resource","value":{"String":"slash-key"}}
+{"_s":"kv","desc":"key with backslashes","key":"C:\\Users\\admin\\secret","value":{"String":"backslash-key"}}
+{"_s":"kv","desc":"key with only special chars","key":"@#$%^&*()!~`","value":{"String":"special-key"}}
+{"_s":"kv","desc":"key with brackets","key":"array[0][1]","value":{"String":"bracket-key"}}
+{"_s":"kv","desc":"key with curly braces","key":"{key}","value":{"String":"curly-key"}}
+{"_s":"kv","desc":"key that is a single dot","key":".","value":{"String":"dot-only"}}
+{"_s":"kv","desc":"key that is dollar sign","key":"$","value":{"String":"dollar-key"}}
+{"_s":"kv","desc":"key with leading trailing spaces","key":"  padded  ","value":{"String":"padded-key"}}
+{"_s":"kv","desc":"homoglyph key — Cyrillic a vs Latin a","key":"\u0430\u0432\u0441","value":{"String":"cyrillic-key"}}
+{"_s":"kv","desc":"value is Zalgo text","key":"dirty:zalgo","value":{"String":"H\u0336\u0317\u0318\u0361e\u0344\u031a\u0317 c\u0355\u0321o\u0344\u0354\u031dm\u0337\u0320e\u0341\u034d\u0329s\u0347"}}
+{"_s":"kv","desc":"value is emoji ZWJ family","key":"dirty:emoji-family","value":{"String":"\uD83D\uDC68\u200D\uD83D\uDC69\u200D\uD83D\uDC67\u200D\uD83D\uDC66"}}
+{"_s":"kv","desc":"value is Chinese text","key":"dirty:chinese","value":{"String":"数据库性能测试：写入一百万条记录"}}
+{"_s":"kv","desc":"value is Japanese text","key":"dirty:japanese","value":{"String":"データベースのパフォーマンステスト"}}
+{"_s":"kv","desc":"value is Korean text","key":"dirty:korean","value":{"String":"데이터베이스 성능 테스트"}}
+{"_s":"kv","desc":"value is Arabic RTL","key":"dirty:arabic","value":{"String":"اختبار أداء قاعدة البيانات"}}
+{"_s":"kv","desc":"value is Hebrew RTL","key":"dirty:hebrew","value":{"String":"בדיקת ביצועי מסד נתונים"}}
+{"_s":"kv","desc":"value is Thai","key":"dirty:thai","value":{"String":"ทดสอบประสิทธิภาพฐานข้อมูล"}}
+{"_s":"kv","desc":"value is Devanagari","key":"dirty:devanagari","value":{"String":"डेटाबेस प्रदर्शन परीक्षण"}}
+{"_s":"kv","desc":"value is mixed scripts","key":"dirty:mixed-scripts","value":{"String":"Hello世界مرحباПривет🌍"}}
+{"_s":"kv","desc":"value with combining chars","key":"dirty:combining","value":{"String":"e\u0301 vs \u00e9"}}
+{"_s":"kv","desc":"value is full-width Latin","key":"dirty:fullwidth","value":{"String":"\uFF28\uFF45\uFF4C\uFF4C\uFF4F"}}
+{"_s":"kv","desc":"value with all ASCII control chars 0x01-0x1F","key":"dirty:control-chars","value":{"String":"\u0001\u0002\u0003\u0004\u0005\u0006\u0007\u0008\u000b\u000c\u000e\u000f\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001a\u001b\u001c\u001d\u001e\u001f"}}
+{"_s":"kv","desc":"value with DEL char","key":"dirty:del","value":{"String":"before\u007Fafter"}}
+{"_s":"kv","desc":"value is just spaces","key":"dirty:spaces-value","value":{"String":"                    "}}
+{"_s":"kv","desc":"value is just newlines","key":"dirty:newlines-value","value":{"String":"\n\n\n\n\n"}}
+{"_s":"kv","desc":"value is just tabs","key":"dirty:tabs-value","value":{"String":"\t\t\t\t\t"}}
+{"_s":"kv","desc":"value with backslashes","key":"dirty:backslashes","value":{"String":"\\n\\t\\r\\0\\\\"}}
+{"_s":"kv","desc":"value with quotes","key":"dirty:quotes","value":{"String":"He said \"hello\" and 'goodbye'"}}
+{"_s":"kv","desc":"value i64 MAX","key":"dirty:i64-max","value":{"Int":9223372036854775807}}
+{"_s":"kv","desc":"value i64 MIN","key":"dirty:i64-min","value":{"Int":-9223372036854775808}}
+{"_s":"kv","desc":"value float negative zero","key":"dirty:neg-zero","value":{"Float":-0.0}}
+{"_s":"kv","desc":"value float very small","key":"dirty:float-tiny","value":{"Float":5e-324}}
+{"_s":"kv","desc":"value float very large","key":"dirty:float-huge","value":{"Float":1.7976931348623157e308}}
+{"_s":"kv","desc":"value is Null","key":"dirty:null-value","value":null}
+{"_s":"kv","desc":"value is empty bytes","key":"dirty:empty-bytes","value":{"Bytes":[]}}
+{"_s":"kv","desc":"value is Bool false","key":"dirty:false","value":{"Bool":false}}
+{"_s":"kv","desc":"supplementary plane char — musical symbol","key":"dirty:supp-plane","value":{"String":"\uD834\uDD1E"}}
+{"_s":"kv","desc":"value with zero-width chars throughout","key":"dirty:invisible","value":{"String":"see\u200B\u200C\u200D\uFEFFnothing"}}
+{"_s":"kv_reject","desc":"empty key should be rejected","key":"","value":{"String":"should-fail"}}
+{"_s":"state","desc":"cell name with unicode","cell":"状态:health","value":{"String":"ok"}}
+{"_s":"state","desc":"cell name with control chars","cell":"cell\u0001name","value":{"String":"ctrl-cell"}}
+{"_s":"state","desc":"cell name with dots and colons","cell":"a.b:c.d:e","value":{"Int":42}}
+{"_s":"state","desc":"cell with Null value","cell":"dirty:null-state","value":null}
+{"_s":"state","desc":"cell with i64 MAX","cell":"dirty:max-int","value":{"Int":9223372036854775807}}
+{"_s":"state","desc":"cell with i64 MIN","cell":"dirty:min-int","value":{"Int":-9223372036854775808}}
+{"_s":"state","desc":"cell with Zalgo value","cell":"dirty:zalgo-state","value":{"String":"T\u0336\u0356\u031f\u0320h\u0344\u0325e\u0341\u0329 \u0360v\u0344\u031ao\u0341\u0318i\u0341\u0329d"}}
+{"_s":"state","desc":"cell with mixed RTL/LTR","cell":"dirty:bidi-state","value":{"String":"left\u200Fright\u200Eleft"}}
+{"_s":"event","desc":"event type with unicode","event_type":"エラー","payload":{"msg":"unicode event type"}}
+{"_s":"event","desc":"event type with special chars","event_type":"error/timeout@db#1","payload":{"msg":"special chars in type"}}
+{"_s":"event","desc":"event type with only emoji","event_type":"🔥💥","payload":{"msg":"emoji event type"}}
+{"_s":"event","desc":"payload with null values","event_type":"dirty","payload":{"a":null,"b":null,"c":null}}
+{"_s":"event","desc":"payload with empty nested objects","event_type":"dirty","payload":{"empty_obj":{},"empty_arr":[],"nested":{"also_empty":{}}}}
+{"_s":"event","desc":"payload with mixed type array","event_type":"dirty","payload":{"mixed":[1,"two",true,null,3.14,[],{}]}}
+{"_s":"event","desc":"payload deeply nested 30 levels","event_type":"dirty","payload":{"l1":{"l2":{"l3":{"l4":{"l5":{"l6":{"l7":{"l8":{"l9":{"l10":{"l11":{"l12":{"l13":{"l14":{"l15":{"l16":{"l17":{"l18":{"l19":{"l20":{"l21":{"l22":{"l23":{"l24":{"l25":{"l26":{"l27":{"l28":{"l29":{"l30":"bottom"}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+{"_s":"event","desc":"payload with very long string value","event_type":"dirty","payload":{"long":"BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"}}
+{"_s":"event","desc":"payload with numeric edge cases","event_type":"dirty","payload":{"max_i64":9223372036854775807,"min_i64":-9223372036854775808,"tiny":5e-324,"huge":1.7976931348623157e308}}
+{"_s":"json","desc":"document with 50 level nesting","key":"dirty:deep-nest","doc":{"l1":{"l2":{"l3":{"l4":{"l5":{"l6":{"l7":{"l8":{"l9":{"l10":{"l11":{"l12":{"l13":{"l14":{"l15":{"l16":{"l17":{"l18":{"l19":{"l20":{"l21":{"l22":{"l23":{"l24":{"l25":{"l26":{"l27":{"l28":{"l29":{"l30":{"l31":{"l32":{"l33":{"l34":{"l35":{"l36":{"l37":{"l38":{"l39":{"l40":{"l41":{"l42":{"l43":{"l44":{"l45":{"l46":{"l47":{"l48":{"l49":{"l50":"bottom"}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+{"_s":"json","desc":"document with null values everywhere","key":"dirty:nulls","doc":{"a":null,"b":{"c":null,"d":{"e":null}},"f":[null,null,null]}}
+{"_s":"json","desc":"document with mixed type array","key":"dirty:mixed-arr","doc":{"data":[1,"two",true,null,3.14,{"nested":true},[1,2,3]]}}
+{"_s":"json","desc":"document with empty containers","key":"dirty:empties","doc":{"empty_obj":{},"empty_arr":[],"empty_str":"","nested":{"also_empty":{},"also_arr":[]}}}
+{"_s":"json","desc":"document with unicode keys","key":"dirty:unicode-keys","doc":{"名前":"太郎","عمر":25,"Возраст":30,"🔑":"emoji-key-value"}}
+{"_s":"json","desc":"document with keys that look like paths","key":"dirty:path-keys","doc":{"a.b":"dotted","a/b":"slashed","a\\b":"backslashed","$":"dollar","$.path":"json-path-like"}}
+{"_s":"json","desc":"document with very long key names","key":"dirty:long-keys","doc":{"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa":"long-key-value"}}
+{"_s":"json","desc":"document with boolean and numeric edge cases","key":"dirty:edge-nums","doc":{"max_i64":9223372036854775807,"min_i64":-9223372036854775808,"neg_zero":-0.0,"tiny":5e-324,"true_val":true,"false_val":false}}
+{"_s":"json","desc":"document key with SQL injection","key":"'; DROP TABLE json; --","doc":{"attack":"sqli"}}
+{"_s":"json","desc":"document key with XSS","key":"<img src=x onerror=alert(1)>","doc":{"attack":"xss"}}
+{"_s":"json","desc":"document key with null char","key":"json\u0000key","doc":{"hidden":"null-in-key"}}
+{"_s":"vector","desc":"embedding all zeros","collection":"dirty_vecs","key":"dirty:all-zeros","embedding":[0.0,0.0,0.0,0.0]}
+{"_s":"vector","desc":"embedding all ones","collection":"dirty_vecs","key":"dirty:all-ones","embedding":[1.0,1.0,1.0,1.0]}
+{"_s":"vector","desc":"embedding all same value","collection":"dirty_vecs","key":"dirty:uniform","embedding":[0.5,0.5,0.5,0.5]}
+{"_s":"vector","desc":"embedding with negative values","collection":"dirty_vecs","key":"dirty:negatives","embedding":[-1.0,-0.5,0.5,1.0]}
+{"_s":"vector","desc":"embedding with very large values","collection":"dirty_vecs","key":"dirty:large","embedding":[999999.0,-999999.0,999999.0,-999999.0]}
+{"_s":"vector","desc":"embedding with very small values","collection":"dirty_vecs","key":"dirty:tiny","embedding":[0.000001,-0.000001,0.000001,-0.000001]}
+{"_s":"vector","desc":"key with unicode for vector","collection":"dirty_vecs","key":"dirty:向量","embedding":[0.1,0.2,0.3,0.4]}
+{"_s":"vector","desc":"key with special chars for vector","collection":"dirty_vecs","key":"dirty:<vec>&\"'","embedding":[0.5,0.6,0.7,0.8]}
+{"_s":"cross_kv_json","desc":"same dirty key in KV and JSON","key":"dirty:cross:同じキー","kv_value":{"String":"kv-side"},"json_doc":{"source":"json-side","data":123}}
+{"_s":"cross_kv_json","desc":"key with control chars in both","key":"dirty:cross:\t\n","kv_value":{"String":"kv-ctrl"},"json_doc":{"source":"json-ctrl"}}
+{"_s":"cross_kv_json","desc":"SQL injection key in both","key":"' OR 1=1; --","kv_value":{"String":"kv-sqli"},"json_doc":{"source":"json-sqli"}}
+{"_s":"cross_branch_dirty","desc":"dirty data survives branch isolation","branch":"dirty-branch","key":"dirty:branch:🔥","kv_value":{"String":"branch-fire"},"cell":"dirty:branch:cell","state_value":{"String":"branch-state-火"},"event_type":"dirty:分岐","event_payload":{"action":"test","data":"ветвь"}}

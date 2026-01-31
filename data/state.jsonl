@@ -1,0 +1,16 @@
+{"_s":"cell","cell":"lock:global","value":{"String":"free"}}
+{"_s":"cell","cell":"lock:resource_a","value":{"String":"free"}}
+{"_s":"cell","cell":"lock:resource_b","value":{"String":"free"}}
+{"_s":"cell","cell":"phase:pipeline","value":{"String":"idle"}}
+{"_s":"cell","cell":"counter:operations","value":{"Int":0}}
+{"_s":"cell","cell":"counter:errors","value":{"Int":0}}
+{"_s":"cell","cell":"flag:maintenance","value":{"Bool":false}}
+{"_s":"cell","cell":"threshold:max_concurrent","value":{"Int":10}}
+{"_s":"cell","cell":"status:health","value":{"String":"green"}}
+{"_s":"cell","cell":"config:batch_size","value":{"Int":100}}
+{"_s":"cas_sequence","cell":"counter:operations","steps":[{"expected_value":{"Int":0},"new_value":{"Int":1}},{"expected_value":{"Int":1},"new_value":{"Int":2}},{"expected_value":{"Int":2},"new_value":{"Int":3}}]}
+{"_s":"cas_sequence","cell":"phase:pipeline","steps":[{"expected_value":{"String":"idle"},"new_value":{"String":"loading"}},{"expected_value":{"String":"loading"},"new_value":{"String":"processing"}},{"expected_value":{"String":"processing"},"new_value":{"String":"complete"}}]}
+{"_s":"cas_sequence","cell":"lock:global","steps":[{"expected_value":{"String":"free"},"new_value":{"String":"agent-1"}},{"expected_value":{"String":"agent-1"},"new_value":{"String":"free"}}]}
+{"_s":"cas_conflict","cell":"lock:resource_a","description":"Two agents racing for the same lock","setup":{"String":"free"},"agent_1":{"String":"agent-1"},"agent_2":{"String":"agent-2"},"expected_winner":"first_to_cas"}
+{"_s":"init_cell","cell":"singleton:created_at","value":{"Int":1700000000}}
+{"_s":"init_cell","cell":"singleton:instance_id","value":{"String":"node-alpha-001"}}

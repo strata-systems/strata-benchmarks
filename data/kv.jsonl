@@ -1,0 +1,52 @@
+{"_s":"entry","key":"user:1001","value":{"String":"Alice Johnson"}}
+{"_s":"entry","key":"user:1002","value":{"String":"Bob Smith"}}
+{"_s":"entry","key":"user:1003","value":{"String":"Charlie Brown"}}
+{"_s":"entry","key":"user:1004","value":{"String":"Diana Prince"}}
+{"_s":"entry","key":"user:1005","value":{"String":"Eve Torres"}}
+{"_s":"entry","key":"config:timeout_ms","value":{"Int":5000}}
+{"_s":"entry","key":"config:max_retries","value":{"Int":3}}
+{"_s":"entry","key":"config:debug_mode","value":{"Bool":false}}
+{"_s":"entry","key":"config:api_version","value":{"String":"v2.4.1"}}
+{"_s":"entry","key":"config:feature_flags","value":{"String":"search,vectors,branching"}}
+{"_s":"entry","key":"metric:requests_total","value":{"Int":148203}}
+{"_s":"entry","key":"metric:errors_total","value":{"Int":37}}
+{"_s":"entry","key":"metric:avg_latency_us","value":{"Float":842.5}}
+{"_s":"entry","key":"metric:p99_latency_us","value":{"Float":4210.0}}
+{"_s":"entry","key":"metric:uptime_secs","value":{"Int":86400}}
+{"_s":"entry","key":"cache:session:a1b2c3","value":{"String":"eyJhbGciOiJIUzI1NiJ9.token_data_here"}}
+{"_s":"entry","key":"cache:session:d4e5f6","value":{"String":"eyJhbGciOiJIUzI1NiJ9.another_token_here"}}
+{"_s":"entry","key":"queue:pending:0","value":{"String":"task-analyze-logs"}}
+{"_s":"entry","key":"queue:pending:1","value":{"String":"task-generate-report"}}
+{"_s":"entry","key":"queue:pending:2","value":{"String":"task-send-notification"}}
+{"_s":"entry","key":"tag:important","value":{"Bool":true}}
+{"_s":"entry","key":"tag:archived","value":{"Bool":false}}
+{"_s":"entry","key":"counter:page_views","value":{"Int":0}}
+{"_s":"entry","key":"counter:signups","value":{"Int":0}}
+{"_s":"entry","key":"empty_string_value","value":{"String":""}}
+{"_s":"entry","key":"unicode:greeting","value":{"String":"こんにちは世界"}}
+{"_s":"entry","key":"unicode:emoji","value":{"String":"🔑 key-value store"}}
+{"_s":"entry","key":"unicode:arabic","value":{"String":"مرحبا بالعالم"}}
+{"_s":"entry","key":"long_value","value":{"String":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"}}
+{"_s":"entry","key":"numeric:zero","value":{"Int":0}}
+{"_s":"entry","key":"numeric:negative","value":{"Int":-42}}
+{"_s":"entry","key":"numeric:max_i32","value":{"Int":2147483647}}
+{"_s":"entry","key":"numeric:float_precision","value":{"Float":3.141592653589793}}
+{"_s":"entry","key":"numeric:float_tiny","value":{"Float":0.000001}}
+{"_s":"entry","key":"numeric:float_negative","value":{"Float":-273.15}}
+{"_s":"prefix","prefix":"user:","count":5}
+{"_s":"prefix","prefix":"config:","count":5}
+{"_s":"prefix","prefix":"metric:","count":5}
+{"_s":"prefix","prefix":"cache:session:","count":2}
+{"_s":"prefix","prefix":"queue:pending:","count":3}
+{"_s":"prefix","prefix":"tag:","count":2}
+{"_s":"prefix","prefix":"counter:","count":2}
+{"_s":"prefix","prefix":"unicode:","count":3}
+{"_s":"prefix","prefix":"numeric:","count":6}
+{"_s":"prefix","prefix":"nonexistent:","count":0}
+{"_s":"deletion","key":"cache:session:a1b2c3"}
+{"_s":"deletion","key":"queue:pending:0"}
+{"_s":"deletion","key":"tag:archived"}
+{"_s":"overwrite","key":"counter:page_views","value":{"Int":1}}
+{"_s":"overwrite","key":"counter:page_views","value":{"Int":2}}
+{"_s":"overwrite","key":"counter:page_views","value":{"Int":3}}
+{"_s":"overwrite","key":"config:debug_mode","value":{"Bool":true}}

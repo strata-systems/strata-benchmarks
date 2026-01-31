@@ -1,0 +1,29 @@
+{"_s":"branch","name":"branch-alpha"}
+{"_s":"branch","name":"branch-beta"}
+{"_s":"branch","name":"branch-gamma"}
+{"_s":"branch_kv","branch":"branch-alpha","key":"env","value":{"String":"alpha"}}
+{"_s":"branch_kv","branch":"branch-alpha","key":"setting:mode","value":{"String":"aggressive"}}
+{"_s":"branch_kv","branch":"branch-alpha","key":"result:score","value":{"Float":0.92}}
+{"_s":"branch_kv","branch":"branch-beta","key":"env","value":{"String":"beta"}}
+{"_s":"branch_kv","branch":"branch-beta","key":"setting:mode","value":{"String":"conservative"}}
+{"_s":"branch_kv","branch":"branch-beta","key":"result:score","value":{"Float":0.78}}
+{"_s":"branch_kv","branch":"branch-gamma","key":"env","value":{"String":"gamma"}}
+{"_s":"branch_kv","branch":"branch-gamma","key":"setting:mode","value":{"String":"balanced"}}
+{"_s":"branch_state","branch":"branch-alpha","cell":"status","value":{"String":"complete"}}
+{"_s":"branch_state","branch":"branch-alpha","cell":"confidence","value":{"Float":0.85}}
+{"_s":"branch_state","branch":"branch-beta","cell":"status","value":{"String":"complete"}}
+{"_s":"branch_state","branch":"branch-beta","cell":"confidence","value":{"Float":0.62}}
+{"_s":"branch_state","branch":"branch-gamma","cell":"status","value":{"String":"in_progress"}}
+{"_s":"branch_state","branch":"branch-gamma","cell":"confidence","value":{"Float":0.40}}
+{"_s":"branch_event","branch":"branch-alpha","event_type":"step","payload":{"action":"init","branch":"alpha"}}
+{"_s":"branch_event","branch":"branch-alpha","event_type":"step","payload":{"action":"analyze","branch":"alpha"}}
+{"_s":"branch_event","branch":"branch-alpha","event_type":"step","payload":{"action":"conclude","branch":"alpha"}}
+{"_s":"branch_event","branch":"branch-beta","event_type":"step","payload":{"action":"init","branch":"beta"}}
+{"_s":"branch_event","branch":"branch-beta","event_type":"step","payload":{"action":"analyze","branch":"beta"}}
+{"_s":"branch_event","branch":"branch-beta","event_type":"step","payload":{"action":"retry","branch":"beta"}}
+{"_s":"branch_event","branch":"branch-beta","event_type":"step","payload":{"action":"conclude","branch":"beta"}}
+{"_s":"branch_event","branch":"branch-gamma","event_type":"step","payload":{"action":"init","branch":"gamma"}}
+{"_s":"isolation_check","description":"branch-alpha KV not visible on branch-beta","on_branch":"branch-beta","key":"result:score","expected_value":{"Float":0.78}}
+{"_s":"isolation_check","description":"branch-beta events not visible on branch-alpha","on_branch":"branch-alpha","expected_event_count":3}
+{"_s":"isolation_check","description":"no branch data visible on default","on_branch":"default","key":"env","expected_value":null}
+{"_s":"cross_branch_comparison","cell":"confidence","expected":{"branch-alpha":0.85,"branch-beta":0.62,"branch-gamma":0.40},"winner":"branch-alpha"}
