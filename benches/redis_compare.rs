@@ -3,7 +3,12 @@
 //! Runs the same operations as `redis-benchmark` (default suite) using Strata's
 //! API, so results can be placed side-by-side for comparison.
 //!
+//! By default, matches redis-benchmark's default behavior (no key randomization,
+//! all operations hit the same key). Use `-r <keyspace>` to enable random keys
+//! (equivalent to `redis-benchmark -r <keyspace>`).
+//!
 //! Run: `cargo bench --bench redis_compare`
+//! Random keys: `cargo bench --bench redis_compare -- -r 100000`
 //! Quick: `cargo bench --bench redis_compare -- --durability cache -q`
 //! CSV:  `cargo bench --bench redis_compare -- --csv`
 
@@ -11,7 +16,7 @@
 #[path = "harness/mod.rs"]
 mod harness;
 
-use harness::{create_db, print_hardware_info, DurabilityConfig};
+use harness::{create_db, print_hardware_info, BenchDb, DurabilityConfig};
 use std::collections::HashMap;
 use std::time::{Duration, Instant};
 use stratadb::{Command, Value};
@@ -22,37 +27,67 @@ use stratadb::{Command, Value};
 
 const DEFAULT_REQUESTS: usize = 100_000;
 const DEFAULT_PAYLOAD_SIZE: usize = 3;
-const KEYSPACE_SIZE: u64 = 100_000;
-const WARMUP_REQUESTS: usize = 1_000;
-const INCR_CELLS: u64 = 1_000;
-const HSET_DOCS: u64 = 100;
 
 // ---------------------------------------------------------------------------
-// Fast LCG RNG (same as scaling.rs)
+// Random data generator (matching redis-benchmark's genBenchmarkRandomData)
 // ---------------------------------------------------------------------------
 
-struct LcgRng {
-    state: u64,
+/// Generate random data matching redis-benchmark's genBenchmarkRandomData.
+/// Uses the same LCG: state = state * 1103515245 + 12345, output '0'+((state>>16)&63).
+fn gen_benchmark_random_data(count: usize) -> Vec<u8> {
+    let mut state: u32 = 1234;
+    let mut data = Vec::with_capacity(count);
+    for _ in 0..count {
+        state = state.wrapping_mul(1103515245).wrapping_add(12345);
+        data.push(b'0' + ((state >> 16) & 63) as u8);
+    }
+    data
 }
 
-impl LcgRng {
-    fn new(seed: u64) -> Self {
-        Self { state: seed }
+// ---------------------------------------------------------------------------
+// Key generation (matching redis-benchmark's randomizeClientKey)
+// ---------------------------------------------------------------------------
+
+/// Redis key format: "key:NNNNNNNNNNNN" where N is a 12-digit zero-padded number.
+/// When keyspace=0 (default), all operations hit the fixed key "key:000000000000".
+/// When keyspace>0, keys are randomized in range [0, keyspace).
+///
+/// This matches redis-benchmark's __rand_int__ substitution which writes a
+/// 12-digit number into the command buffer (see randomizeClientKey, line 377).
+struct KeyGen {
+    keyspace: u64,
+    /// Simple LCG matching libc random() used by redis-benchmark.
+    rng_state: u64,
+}
+
+impl KeyGen {
+    fn new(keyspace: u64) -> Self {
+        Self {
+            keyspace,
+            rng_state: 0xdeadbeef,
+        }
     }
 
     #[inline]
-    fn next_u64(&mut self) -> u64 {
-        self.state = self
-            .state
+    fn next_rand(&mut self) -> u64 {
+        self.rng_state = self
+            .rng_state
             .wrapping_mul(6364136223846793005)
             .wrapping_add(1442695040888963407);
-        self.state >> 33
+        self.rng_state >> 33
     }
 
+    /// Generate a key like redis-benchmark's "key:__rand_int__" pattern.
+    /// Without -r: always returns "key:000000000000" (same key every time).
+    /// With -r N: returns "key:NNNNNNNNNNNN" with N in [0, keyspace).
     #[inline]
-    fn rand_key(&mut self) -> String {
-        let idx = self.next_u64() % KEYSPACE_SIZE;
-        format!("key:{:012}", idx)
+    fn key(&mut self, prefix: &str) -> String {
+        if self.keyspace == 0 {
+            format!("{}:000000000000", prefix)
+        } else {
+            let idx = self.next_rand() % self.keyspace;
+            format!("{}:{:012}", prefix, idx)
+        }
     }
 }
 
@@ -78,31 +113,22 @@ struct BenchResult {
 // Core measurement function
 // ---------------------------------------------------------------------------
 
+/// Run a benchmark. No warmup phase — matches redis-benchmark which starts
+/// timing immediately (see benchmark() at line 946).
 fn run_bench(
     name: &str,
     redis_equiv: &str,
     total_ops: usize,
-    warmup_ops: usize,
-    _payload_size: usize,
-    mut bench_fn: impl FnMut(&mut LcgRng),
+    mut bench_fn: impl FnMut(&mut KeyGen),
+    keygen: &mut KeyGen,
 ) -> BenchResult {
-    let mut rng = LcgRng::new(0xdeadbeef);
-
-    // Warmup
-    for _ in 0..warmup_ops {
-        bench_fn(&mut rng);
-    }
-
-    // Reset RNG for measurement
-    rng = LcgRng::new(0xcafebabe);
-
     // Measure every operation
     let mut latencies = Vec::with_capacity(total_ops);
     let wall_start = Instant::now();
 
     for _ in 0..total_ops {
         let op_start = Instant::now();
-        bench_fn(&mut rng);
+        bench_fn(keygen);
         latencies.push(op_start.elapsed());
     }
 
@@ -201,281 +227,189 @@ fn print_csv_row(r: &BenchResult) {
 // ---------------------------------------------------------------------------
 // Test definitions
 //
-// Each test receives a DurabilityConfig and creates its own fresh database.
-// This avoids cross-test contamination (e.g. prefix scans becoming slow due
-// to hundreds of thousands of keys accumulated from prior tests).
+// Each test matches the exact redis-benchmark default command.
+// Tests share the same database within a durability mode, just like
+// redis-benchmark shares the same Redis instance across all tests.
+// LRANGE_100 is the exception — it uses a fresh database because
+// kv_list prefix scan degrades with unrelated keys.
 // ---------------------------------------------------------------------------
 
-fn bench_ping(mode: DurabilityConfig, n: usize, _payload_size: usize) -> BenchResult {
-    let bench_db = create_db(mode);
-    let db = &bench_db.db;
-    run_bench("PING", "PING_INLINE", n, WARMUP_REQUESTS, _payload_size, |_rng| {
-        db.ping().unwrap();
-    })
+/// PING_INLINE: "PING\r\n" (redis-benchmark.c line 1880)
+fn bench_ping(db: &BenchDb, n: usize, keygen: &mut KeyGen) -> BenchResult {
+    run_bench("PING_INLINE", "PING_INLINE", n, |_kg| {
+        db.db.ping().unwrap();
+    }, keygen)
 }
 
-fn bench_set(mode: DurabilityConfig, n: usize, payload_size: usize) -> BenchResult {
-    let bench_db = create_db(mode);
-    let db = &bench_db.db;
-    let val = Value::Bytes(vec![0x78; payload_size]);
-    run_bench("SET", "SET", n, WARMUP_REQUESTS, payload_size, |rng| {
-        let key = rng.rand_key();
-        db.kv_put(&key, val.clone()).unwrap();
-    })
+/// SET: "SET key:__rand_int__ <data>" (redis-benchmark.c line 1889)
+/// Without -r: all writes go to the same key (hot-key benchmark).
+fn bench_set(db: &BenchDb, n: usize, data: &Value, keygen: &mut KeyGen) -> BenchResult {
+    run_bench("SET", "SET", n, |kg| {
+        let key = kg.key("key");
+        db.db.kv_put(&key, data.clone()).unwrap();
+    }, keygen)
 }
 
-fn bench_get(mode: DurabilityConfig, n: usize, payload_size: usize) -> BenchResult {
-    let bench_db = create_db(mode);
-    let db = &bench_db.db;
-    // Setup: pre-populate keys (scale with n to keep setup time proportional)
-    let keyspace = (n as u64).min(KEYSPACE_SIZE);
-    let val = Value::Bytes(vec![0x78; payload_size]);
-    for i in 0..keyspace {
-        db.kv_put(&format!("key:{:012}", i), val.clone()).unwrap();
-    }
-
-    run_bench("GET", "GET", n, WARMUP_REQUESTS, payload_size, |rng| {
-        let idx = rng.next_u64() % keyspace;
-        let key = format!("key:{:012}", idx);
-        let _ = db.kv_get(&key).unwrap();
-    })
+/// GET: "GET key:__rand_int__" (redis-benchmark.c line 1895)
+/// In redis-benchmark, GET runs after SET so the key already exists.
+/// Without -r: reads the same key SET wrote.
+fn bench_get(db: &BenchDb, n: usize, keygen: &mut KeyGen) -> BenchResult {
+    run_bench("GET", "GET", n, |kg| {
+        let key = kg.key("key");
+        let _ = db.db.kv_get(&key);
+    }, keygen)
 }
 
-fn bench_incr(mode: DurabilityConfig, n: usize, payload_size: usize) -> BenchResult {
-    let bench_db = create_db(mode);
-    let db = &bench_db.db;
-    // Setup: initialize counter cells (scale with n)
-    let cells = (n as u64).min(INCR_CELLS);
-    for i in 0..cells {
-        db.state_set(&format!("counter:{}", i), Value::Int(0))
-            .unwrap();
-    }
-
-    run_bench("INCR", "INCR", n, WARMUP_REQUESTS, payload_size, |rng| {
-        let idx = rng.next_u64() % cells;
-        let cell = format!("counter:{}", idx);
-        let current = db.state_read(&cell).unwrap();
+/// INCR: "INCR counter:__rand_int__" (redis-benchmark.c line 1901)
+/// Redis INCR is a single atomic O(1) command.
+/// Strata equivalent requires state_read + state_set (2 operations).
+fn bench_incr(db: &BenchDb, n: usize, keygen: &mut KeyGen) -> BenchResult {
+    run_bench("INCR", "INCR (state_read+state_set)", n, |kg| {
+        let cell = kg.key("counter");
+        let current = db.db.state_read(&cell).unwrap();
         let val = match current {
             Some(Value::Int(v)) => v,
             _ => 0,
         };
-        db.state_set(&cell, Value::Int(val + 1)).unwrap();
-    })
+        db.db.state_set(&cell, Value::Int(val + 1)).unwrap();
+    }, keygen)
 }
 
-fn bench_hset(mode: DurabilityConfig, n: usize, payload_size: usize) -> BenchResult {
-    let bench_db = create_db(mode);
-    let db = &bench_db.db;
-    // Setup: pre-create hash documents as empty objects
-    let empty = Value::Object(HashMap::new());
-    for i in 0..HSET_DOCS {
-        db.json_set(&format!("myhash:{}", i), "$", empty.clone())
+/// HSET: "HSET myhash element:__rand_int__ <data>" (redis-benchmark.c line 1938)
+/// Redis HSET is O(1) hash field set. Strata has no native hash type.
+/// We use kv_put with composite key "myhash:element:X" which is the closest
+/// in terms of cost/complexity to Redis HSET.
+fn bench_hset(db: &BenchDb, n: usize, data: &Value, keygen: &mut KeyGen) -> BenchResult {
+    run_bench("HSET", "HSET (kv_put composite key)", n, |kg| {
+        let key = kg.key("myhash:element");
+        db.db.kv_put(&key, data.clone()).unwrap();
+    }, keygen)
+}
+
+/// MSET (10 keys): "MSET key:__rand_int__ <data>" x10 (redis-benchmark.c line 2000)
+/// Redis MSET is a single atomic command. Without -r, all 10 keys are the same.
+/// Strata equivalent uses Session + TxnBegin + 10x KvPut + TxnCommit.
+fn bench_mset_10(db: &BenchDb, n: usize, data: &Value, keygen: &mut KeyGen) -> BenchResult {
+    run_bench("MSET (10 keys)", "MSET (10 keys) via txn", n, |kg| {
+        let mut session = db.db.session();
+        session
+            .execute(Command::TxnBegin {
+                branch: None,
+                options: None,
+            })
             .unwrap();
-    }
-
-    let val = Value::Bytes(vec![0x78; payload_size]);
-    run_bench("HSET", "HSET", n, WARMUP_REQUESTS, payload_size, |rng| {
-        let doc_idx = rng.next_u64() % HSET_DOCS;
-        let field_idx = rng.next_u64() % KEYSPACE_SIZE;
-        let key = format!("myhash:{}", doc_idx);
-        let path = format!("$.element_{}", field_idx);
-        db.json_set(&key, &path, val.clone()).unwrap();
-    })
-}
-
-fn bench_mset_10(mode: DurabilityConfig, n: usize, payload_size: usize) -> BenchResult {
-    let bench_db = create_db(mode);
-    let db = &bench_db.db;
-    let val = Value::Bytes(vec![0x78; payload_size]);
-    run_bench(
-        "MSET (10 keys)",
-        "MSET (10 keys)",
-        n,
-        WARMUP_REQUESTS,
-        payload_size,
-        |rng| {
-            let mut session = db.session();
+        for _ in 0..10 {
+            let key = kg.key("key");
             session
-                .execute(Command::TxnBegin {
+                .execute(Command::KvPut {
                     branch: None,
-                    options: None,
+                    key,
+                    value: data.clone(),
                 })
                 .unwrap();
-            for _ in 0..10 {
-                let key = rng.rand_key();
-                session
-                    .execute(Command::KvPut {
-                        branch: None,
-                        key,
-                        value: val.clone(),
-                    })
-                    .unwrap();
-            }
-            session.execute(Command::TxnCommit).unwrap();
-        },
-    )
+        }
+        session.execute(Command::TxnCommit).unwrap();
+    }, keygen)
 }
 
-fn bench_xadd(mode: DurabilityConfig, n: usize, payload_size: usize) -> BenchResult {
-    let bench_db = create_db(mode);
-    let db = &bench_db.db;
+/// XADD: "XADD mystream * myfield <data>" (redis-benchmark.c line 2015)
+/// Stream append with auto-generated ID. This is a close match.
+fn bench_xadd(db: &BenchDb, n: usize, data: &Value, keygen: &mut KeyGen) -> BenchResult {
     let mut payload_map = HashMap::new();
-    payload_map.insert(
-        "myfield".to_string(),
-        Value::Bytes(vec![0x78; payload_size]),
-    );
+    payload_map.insert("myfield".to_string(), data.clone());
     let payload = Value::Object(payload_map);
 
-    run_bench("XADD", "XADD", n, WARMUP_REQUESTS, payload_size, |_rng| {
-        db.event_append("mystream", payload.clone()).unwrap();
-    })
+    run_bench("XADD", "XADD", n, |_kg| {
+        db.db.event_append("mystream", payload.clone()).unwrap();
+    }, keygen)
 }
 
-fn bench_lrange_100(mode: DurabilityConfig, n: usize, payload_size: usize) -> BenchResult {
-    // Fresh database so kv_list only scans the 100 list keys, not 300K+ from prior tests
+/// LRANGE_100: "LRANGE mylist 0 99" (redis-benchmark.c line 1977)
+/// Redis: indexed list access on a single pre-filled list, O(S+N).
+/// Strata: kv_list prefix scan returning 100 keys. NOT equivalent —
+/// kv_list scans the key namespace, not an indexed list.
+/// Uses a fresh database to avoid scanning unrelated keys.
+fn bench_lrange_100(mode: DurabilityConfig, n: usize, data: &Value, keygen: &mut KeyGen) -> BenchResult {
     let bench_db = create_db(mode);
-    let db = &bench_db.db;
-    // Setup: populate 100 keys with prefix
-    let val = Value::Bytes(vec![0x78; payload_size]);
+    // Pre-populate 100 keys to scan (analogous to LPUSH filling the list)
     for i in 0..100u64 {
-        db.kv_put(&format!("listkey:{:06}", i), val.clone())
+        bench_db
+            .db
+            .kv_put(&format!("mylist:{:06}", i), data.clone())
             .unwrap();
     }
 
     run_bench(
-        "LRANGE_100",
-        "LRANGE_100 (kv_list)",
+        "LRANGE_100 (first 100 elements)",
+        "LRANGE_100 (kv_list prefix scan — NOT equivalent)",
         n,
-        WARMUP_REQUESTS,
-        payload_size,
-        |_rng| {
-            let _ = db.kv_list(Some("listkey:")).unwrap();
+        |_kg| {
+            let _ = bench_db.db.kv_list(Some("mylist:")).unwrap();
         },
+        keygen,
     )
 }
 
 // --- Strata-unique bonus tests ---
 
-fn bench_state_set(mode: DurabilityConfig, n: usize, payload_size: usize) -> BenchResult {
-    let bench_db = create_db(mode);
-    let db = &bench_db.db;
-    let val = Value::Bytes(vec![0x78; payload_size]);
-    run_bench(
-        "STATE_SET",
-        "(Strata unique)",
-        n,
-        WARMUP_REQUESTS,
-        payload_size,
-        |rng| {
-            let idx = rng.next_u64() % INCR_CELLS;
-            let cell = format!("cell:{}", idx);
-            db.state_set(&cell, val.clone()).unwrap();
-        },
-    )
+fn bench_state_set(db: &BenchDb, n: usize, data: &Value, keygen: &mut KeyGen) -> BenchResult {
+    run_bench("STATE_SET", "(Strata unique)", n, |kg| {
+        let cell = kg.key("cell");
+        db.db.state_set(&cell, data.clone()).unwrap();
+    }, keygen)
 }
 
-fn bench_state_read(mode: DurabilityConfig, n: usize, payload_size: usize) -> BenchResult {
-    let bench_db = create_db(mode);
-    let db = &bench_db.db;
-    // Setup: populate cells (scale with n)
-    let cells = (n as u64).min(INCR_CELLS);
-    let val = Value::Bytes(vec![0x78; payload_size]);
-    for i in 0..cells {
-        db.state_set(&format!("rcell:{}", i), val.clone()).unwrap();
-    }
+fn bench_state_read(db: &BenchDb, n: usize, keygen: &mut KeyGen) -> BenchResult {
+    // Pre-populate one cell so reads return data
+    db.db
+        .state_set("rcell:000000000000", Value::Int(42))
+        .unwrap();
 
-    run_bench(
-        "STATE_READ",
-        "(Strata unique)",
-        n,
-        WARMUP_REQUESTS,
-        payload_size,
-        |rng| {
-            let idx = rng.next_u64() % cells;
-            let cell = format!("rcell:{}", idx);
-            let _ = db.state_read(&cell).unwrap();
-        },
-    )
+    run_bench("STATE_READ", "(Strata unique)", n, |kg| {
+        let cell = kg.key("rcell");
+        let _ = db.db.state_read(&cell).unwrap();
+    }, keygen)
 }
 
-fn bench_event_read(mode: DurabilityConfig, n: usize, payload_size: usize) -> BenchResult {
-    let bench_db = create_db(mode);
-    let db = &bench_db.db;
-    // Setup: append events to read back (scale with n to keep setup proportional)
-    let mut payload_map = HashMap::new();
-    payload_map.insert(
+fn bench_event_read(db: &BenchDb, n: usize, keygen: &mut KeyGen) -> BenchResult {
+    // Pre-populate events to read back (scale with n)
+    let event_count = (n as u64).min(10_000).max(1);
+    let payload = Value::Object(HashMap::from([(
         "data".to_string(),
-        Value::Bytes(vec![0x78; payload_size]),
-    );
-    let payload = Value::Object(payload_map);
-    let event_count = (n as u64).min(10_000);
+        Value::Int(0),
+    )]));
     for _ in 0..event_count {
-        db.event_append("readstream", payload.clone()).unwrap();
+        db.db.event_append("readstream", payload.clone()).unwrap();
     }
 
-    run_bench(
-        "EVENT_READ",
-        "(Strata unique)",
-        n,
-        WARMUP_REQUESTS,
-        payload_size,
-        |rng| {
-            let seq = (rng.next_u64() % event_count) + 1;
-            let _ = db.event_read(seq).unwrap();
-        },
-    )
+    run_bench("EVENT_READ", "(Strata unique)", n, |kg| {
+        let seq = (kg.next_rand() % event_count) + 1;
+        let _ = db.db.event_read(seq).unwrap();
+    }, keygen)
 }
 
-fn bench_kv_delete(mode: DurabilityConfig, n: usize, payload_size: usize) -> BenchResult {
-    let bench_db = create_db(mode);
-    let db = &bench_db.db;
-    // Setup: pre-populate keys (scale with n to keep setup proportional)
-    let keyspace = (n as u64).min(KEYSPACE_SIZE);
-    let val = Value::Bytes(vec![0x78; payload_size]);
+fn bench_kv_delete(db: &BenchDb, n: usize, data: &Value, keygen: &mut KeyGen) -> BenchResult {
+    // Pre-populate keys to delete (scale with n)
+    let keyspace = (n as u64).min(100_000).max(1);
     for i in 0..keyspace {
-        db.kv_put(&format!("dkey:{:012}", i), val.clone()).unwrap();
+        db.db
+            .kv_put(&format!("dkey:{:012}", i), data.clone())
+            .unwrap();
     }
 
-    run_bench(
-        "KV_DELETE",
-        "DEL (bonus)",
-        n,
-        WARMUP_REQUESTS,
-        payload_size,
-        |rng| {
-            let idx = rng.next_u64() % keyspace;
+    run_bench("KV_DELETE", "DEL (bonus)", n, |kg| {
+        if kg.keyspace == 0 {
+            let _ = db.db.kv_delete("dkey:000000000000");
+        } else {
+            let idx = kg.next_rand() % keyspace;
             let key = format!("dkey:{:012}", idx);
-            let _ = db.kv_delete(&key).unwrap();
-        },
-    )
+            let _ = db.db.kv_delete(&key);
+        }
+    }, keygen)
 }
-
-// ---------------------------------------------------------------------------
-// Test registry
-// ---------------------------------------------------------------------------
-
-struct TestDef {
-    name: &'static str,
-    run: fn(DurabilityConfig, usize, usize) -> BenchResult,
-}
-
-const ALL_TESTS: &[TestDef] = &[
-    TestDef { name: "PING", run: bench_ping },
-    TestDef { name: "SET", run: bench_set },
-    TestDef { name: "GET", run: bench_get },
-    TestDef { name: "INCR", run: bench_incr },
-    TestDef { name: "HSET", run: bench_hset },
-    TestDef { name: "MSET", run: bench_mset_10 },
-    TestDef { name: "XADD", run: bench_xadd },
-    TestDef { name: "LRANGE_100", run: bench_lrange_100 },
-    TestDef { name: "STATE_SET", run: bench_state_set },
-    TestDef { name: "STATE_READ", run: bench_state_read },
-    TestDef { name: "EVENT_READ", run: bench_event_read },
-    TestDef { name: "KV_DELETE", run: bench_kv_delete },
-];
 
 const SKIPPED_REDIS_TESTS: &[&str] = &[
-    "LPUSH", "RPUSH", "LPOP", "RPOP", "SADD", "SPOP",
+    "PING_MBULK", "LPUSH", "RPUSH", "LPOP", "RPOP", "SADD", "SPOP",
     "LRANGE_300", "LRANGE_500", "LRANGE_600", "ZADD", "ZPOPMIN",
 ];
 
@@ -487,6 +421,7 @@ const SKIPPED_REDIS_TESTS: &[&str] = &[
 struct Config {
     requests: usize,
     payload_size: usize,
+    keyspace: u64,
     durability: Vec<DurabilityConfig>,
     tests: Option<Vec<String>>,
     csv: bool,
@@ -498,6 +433,7 @@ fn parse_args() -> Config {
     let mut config = Config {
         requests: DEFAULT_REQUESTS,
         payload_size: DEFAULT_PAYLOAD_SIZE,
+        keyspace: 0, // default: no randomization, same key every time (matches redis-benchmark)
         durability: DurabilityConfig::ALL.to_vec(),
         tests: None,
         csv: false,
@@ -514,6 +450,10 @@ fn parse_args() -> Config {
             "-d" => {
                 i += 1;
                 config.payload_size = args[i].parse().unwrap_or(DEFAULT_PAYLOAD_SIZE);
+            }
+            "-r" => {
+                i += 1;
+                config.keyspace = args[i].parse().unwrap_or(0);
             }
             "--durability" => {
                 i += 1;
@@ -543,12 +483,27 @@ fn parse_args() -> Config {
 }
 
 // ---------------------------------------------------------------------------
+// Test filter
+// ---------------------------------------------------------------------------
+
+fn test_is_selected(name: &str, filter: &Option<Vec<String>>) -> bool {
+    match filter {
+        None => true,
+        Some(names) => names.iter().any(|f| name.to_uppercase().starts_with(&f.to_uppercase())),
+    }
+}
+
+// ---------------------------------------------------------------------------
 // Main
 // ---------------------------------------------------------------------------
 
 fn main() {
     let config = parse_args();
     print_hardware_info();
+
+    // Generate random payload data matching redis-benchmark's genBenchmarkRandomData
+    let data_bytes = gen_benchmark_random_data(config.payload_size);
+    let data = Value::Bytes(data_bytes);
 
     if !config.csv {
         eprintln!("=== StrataDB Redis-Comparison Benchmark ===");
@@ -557,10 +512,18 @@ fn main() {
         eprintln!("- Redis is client-server (TCP roundtrip, RESP protocol encoding)");
         eprintln!("- Compare to redis-benchmark run on the same hardware");
         eprintln!();
-        eprintln!(
-            "Parameters: {} requests, {} bytes payload, keyspace {}",
-            config.requests, config.payload_size, KEYSPACE_SIZE
-        );
+        if config.keyspace == 0 {
+            eprintln!(
+                "Parameters: {} requests, {} bytes payload, no key randomization (same key)",
+                config.requests, config.payload_size
+            );
+            eprintln!("  (use -r <keyspace> to enable random keys, e.g. -r 100000)");
+        } else {
+            eprintln!(
+                "Parameters: {} requests, {} bytes payload, keyspace {} (random keys)",
+                config.requests, config.payload_size, config.keyspace
+            );
+        }
         eprintln!();
     }
 
@@ -583,23 +546,84 @@ fn main() {
             eprintln!();
         }
 
-        for test in ALL_TESTS {
-            // Filter tests if -t was specified
-            if let Some(ref filter) = config.tests {
-                if !filter.iter().any(|f| test.name.starts_with(f.as_str())) {
-                    continue;
-                }
-            }
+        // Shared database for all tests in this durability mode
+        // (matches Redis where all tests share the same instance)
+        let bench_db = create_db(*mode);
 
-            let result = (test.run)(*mode, config.requests, config.payload_size);
+        // --- Redis-equivalent tests (in redis-benchmark's exact order) ---
 
-            if config.csv {
-                print_csv_row(&result);
-            } else if config.quiet {
-                print_quiet(&result);
-            } else {
-                print_verbose(&result, config.payload_size);
-            }
+        if test_is_selected("PING", &config.tests) {
+            let mut kg = KeyGen::new(config.keyspace);
+            let result = bench_ping(&bench_db, config.requests, &mut kg);
+            print_result(&result, &config);
+        }
+
+        if test_is_selected("SET", &config.tests) {
+            let mut kg = KeyGen::new(config.keyspace);
+            let result = bench_set(&bench_db, config.requests, &data, &mut kg);
+            print_result(&result, &config);
+        }
+
+        if test_is_selected("GET", &config.tests) {
+            let mut kg = KeyGen::new(config.keyspace);
+            let result = bench_get(&bench_db, config.requests, &mut kg);
+            print_result(&result, &config);
+        }
+
+        if test_is_selected("INCR", &config.tests) {
+            let mut kg = KeyGen::new(config.keyspace);
+            let result = bench_incr(&bench_db, config.requests, &mut kg);
+            print_result(&result, &config);
+        }
+
+        if test_is_selected("HSET", &config.tests) {
+            let mut kg = KeyGen::new(config.keyspace);
+            let result = bench_hset(&bench_db, config.requests, &data, &mut kg);
+            print_result(&result, &config);
+        }
+
+        if test_is_selected("MSET", &config.tests) {
+            let mut kg = KeyGen::new(config.keyspace);
+            let result = bench_mset_10(&bench_db, config.requests, &data, &mut kg);
+            print_result(&result, &config);
+        }
+
+        if test_is_selected("XADD", &config.tests) {
+            let mut kg = KeyGen::new(config.keyspace);
+            let result = bench_xadd(&bench_db, config.requests, &data, &mut kg);
+            print_result(&result, &config);
+        }
+
+        if test_is_selected("LRANGE", &config.tests) {
+            let mut kg = KeyGen::new(config.keyspace);
+            let result = bench_lrange_100(*mode, config.requests, &data, &mut kg);
+            print_result(&result, &config);
+        }
+
+        // --- Strata-unique bonus tests ---
+
+        if test_is_selected("STATE_SET", &config.tests) {
+            let mut kg = KeyGen::new(config.keyspace);
+            let result = bench_state_set(&bench_db, config.requests, &data, &mut kg);
+            print_result(&result, &config);
+        }
+
+        if test_is_selected("STATE_READ", &config.tests) {
+            let mut kg = KeyGen::new(config.keyspace);
+            let result = bench_state_read(&bench_db, config.requests, &mut kg);
+            print_result(&result, &config);
+        }
+
+        if test_is_selected("EVENT_READ", &config.tests) {
+            let mut kg = KeyGen::new(config.keyspace);
+            let result = bench_event_read(&bench_db, config.requests, &mut kg);
+            print_result(&result, &config);
+        }
+
+        if test_is_selected("KV_DELETE", &config.tests) {
+            let mut kg = KeyGen::new(config.keyspace);
+            let result = bench_kv_delete(&bench_db, config.requests, &data, &mut kg);
+            print_result(&result, &config);
         }
 
         // List skipped Redis tests
@@ -614,5 +638,15 @@ fn main() {
 
     if !config.csv {
         eprintln!("=== Benchmark complete ===");
+    }
+}
+
+fn print_result(result: &BenchResult, config: &Config) {
+    if config.csv {
+        print_csv_row(result);
+    } else if config.quiet {
+        print_quiet(result);
+    } else {
+        print_verbose(result, config.payload_size);
     }
 }

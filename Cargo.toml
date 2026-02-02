@@ -46,3 +46,7 @@ harness = false
 [[bench]]
 name = "redis_compare"
 harness = false
+
+[[bench]]
+name = "fill_level"
+harness = false
