@@ -3,13 +3,14 @@
 //! Provides database factory, data generators, latency percentile reporting,
 //! and configuration types used across all primitive benchmark files.
 
+pub mod metrics;
+pub mod scaling;
+
 use std::collections::HashMap;
 use std::fmt;
 use std::time::{Duration, Instant};
 
-use std::sync::Arc;
-
-use stratadb::{Database, Strata, Value, WalCounters};
+use stratadb::{Strata, Value, WalCounters};
 use tempfile::TempDir;
 
 // =============================================================================
@@ -257,7 +258,6 @@ pub fn kv_value_sized(size: ValueSize) -> Value {
 /// Database wrapper that keeps temp directories alive for disk-backed modes.
 pub struct BenchDb {
     pub db: Strata,
-    pub database: Arc<Database>,
     _temp_dir: Option<TempDir>,
 }
 
@@ -267,24 +267,18 @@ pub fn create_db(config: DurabilityConfig) -> BenchDb {
 
     match config {
         DurabilityConfig::Cache => {
-            let db = Database::cache().expect("failed to create cache database");
-            let database = db.clone();
-            let strata = Strata::from_database(db).expect("failed to create Strata");
+            let strata = Strata::cache().expect("failed to create cache database");
             BenchDb {
                 db: strata,
-                database,
                 _temp_dir: None,
             }
         }
         DurabilityConfig::Standard => {
             let temp_dir = TempDir::new().expect("failed to create temp dir");
-            let db = Database::open(temp_dir.path())
+            let strata = Strata::open(temp_dir.path())
                 .expect("failed to open standard database");
-            let database = db.clone();
-            let strata = Strata::from_database(db).expect("failed to create Strata");
             BenchDb {
                 db: strata,
-                database,
                 _temp_dir: Some(temp_dir),
             }
         }
@@ -295,13 +289,10 @@ pub fn create_db(config: DurabilityConfig) -> BenchDb {
                 "durability = \"always\"\n",
             )
             .expect("failed to write always config");
-            let db = Database::open(temp_dir.path())
+            let strata = Strata::open(temp_dir.path())
                 .expect("failed to open always database");
-            let database = db.clone();
-            let strata = Strata::from_database(db).expect("failed to create Strata");
             BenchDb {
                 db: strata,
-                database,
                 _temp_dir: Some(temp_dir),
             }
         }
@@ -404,7 +395,7 @@ pub fn vector_128d(i: u64) -> Vec<f32> {
 /// Snapshot WAL counters from a BenchDb (returns zeros for ephemeral).
 pub fn snapshot_counters(bench_db: &BenchDb) -> WalCounters {
     bench_db
-        .database
+        .db
         .durability_counters()
         .unwrap_or_default()
 }

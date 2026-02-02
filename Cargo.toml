@@ -38,3 +38,7 @@ harness = false
 [[bench]]
 name = "branch"
 harness = false
+
+[[bench]]
+name = "scaling"
+harness = false
