@@ -161,18 +161,18 @@ fn init_creates_new_cells() {
 }
 
 #[test]
-fn init_rejects_existing_cell() {
+fn init_is_idempotent() {
     let ds = load_state_dataset();
     let db = fresh_db();
 
     let init = &ds.init_cells[0];
-    db.state_init(&init.cell, init.value.to_value()).unwrap();
+    let v1 = db.state_init(&init.cell, init.value.to_value()).unwrap();
 
-    // Second init should error
-    let result = db.state_init(&init.cell, stratadb::Value::Int(9999));
-    assert!(result.is_err(), "state_init should reject existing cell");
+    // Second init should succeed idempotently
+    let v2 = db.state_init(&init.cell, stratadb::Value::Int(9999)).unwrap();
+    assert_eq!(v1, v2, "idempotent init should return same version");
 
-    // Original value should be preserved
+    // Original value should be preserved (not overwritten)
     let got = db.state_read(&init.cell).unwrap().unwrap();
     assert_eq!(got, init.value.to_value());
 }

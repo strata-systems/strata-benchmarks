@@ -119,11 +119,9 @@ fn all_primitives_persist() {
     }
 }
 
-/// Vector embeddings do not survive database reopen.
-/// This documents the current behavior — vector data is in-memory only
-/// and is not recovered from WAL/snapshots.
+/// Vector embeddings persist across database reopen via WAL recovery.
 #[test]
-fn vector_data_does_not_persist_across_reopen() {
+fn vector_data_persists_across_reopen() {
     let dir = tempfile::tempdir().unwrap();
     let path = dir.path().to_str().unwrap();
 
@@ -136,9 +134,7 @@ fn vector_data_does_not_persist_across_reopen() {
 
     {
         let db = Strata::open(path).unwrap();
-        // Vector data is currently lost on reopen — this test documents that limitation
-        let result = db.vector_get("vecs", "v1");
-        assert!(result.is_err() || result.unwrap().is_none(),
-            "vector data unexpectedly survived reopen — if this passes, vector persistence is fixed!");
+        let result = db.vector_get("vecs", "v1").unwrap();
+        assert!(result.is_some(), "vector data should survive reopen");
     }
 }

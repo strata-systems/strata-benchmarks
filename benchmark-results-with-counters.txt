@@ -1,0 +1,1256 @@
+   Compiling strata-core v0.1.0 (/home/anibjoshi/Documents/GitHub/strata-core/crates/core)
+   Compiling strata-durability v0.1.0 (/home/anibjoshi/Documents/GitHub/strata-core/crates/durability)
+   Compiling strata-storage v0.1.0 (/home/anibjoshi/Documents/GitHub/strata-core/crates/storage)
+   Compiling strata-concurrency v0.1.0 (/home/anibjoshi/Documents/GitHub/strata-core/crates/concurrency)
+   Compiling strata-engine v0.1.0 (/home/anibjoshi/Documents/GitHub/strata-core/crates/engine)
+   Compiling strata-intelligence v0.1.0 (/home/anibjoshi/Documents/GitHub/strata-core/crates/intelligence)
+   Compiling strata-executor v0.1.0 (/home/anibjoshi/Documents/GitHub/strata-core/crates/executor)
+   Compiling stratadb v0.1.0 (/home/anibjoshi/Documents/GitHub/strata-core)
+   Compiling strata-benchmarks v0.1.0 (/home/anibjoshi/Documents/GitHub/strata-benchmarks)
+    Finished `bench` profile [optimized] target(s) in 6.47s
+     Running unittests src/lib.rs (target/release/deps/strata_benchmarks-2f725f4ad4deea5c)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running benches/branch.rs (target/release/deps/branch-0421d3e3c3876e65)
+Gnuplot not found, using plotters backend
+
+--- Latency Percentiles: branch/create ---
+=== Hardware ===
+CPU:    AMD Ryzen 7 7800X3D 8-Core Processor
+Cores:  16
+RAM:    61 GB
+OS:     linux (x86_64)
+================
+Benchmarking branch/create/durability/none
+Benchmarking branch/create/durability/none: Warming up for 3.0000 s
+Benchmarking branch/create/durability/none: Collecting 100 samples in estimated 5.0106 s (1.8M iterations)
+Benchmarking branch/create/durability/none: Analyzing
+branch/create/durability/none
+                        time:   [4.1088 µs 4.9412 µs 6.4937 µs]
+                        thrpt:  [154.00 Kelem/s 202.38 Kelem/s 243.38 Kelem/s]
+                 change:
+                        time:   [-14.924% +2.4149% +23.268%] (p = 0.84 > 0.05)
+                        thrpt:  [-18.876% -2.3580% +17.542%]
+                        No change in performance detected.
+Found 3 outliers among 100 measurements (3.00%)
+  2 (2.00%) high mild
+  1 (1.00%) high severe
+  branch/create/none                            p50=2.73 µs      p95=3.78 µs      p99=5.03 µs      (n=1000)
+Benchmarking branch/create/durability/buffered
+Benchmarking branch/create/durability/buffered: Warming up for 3.0000 s
+Benchmarking branch/create/durability/buffered: Collecting 100 samples in estimated 5.0080 s (480k iterations)
+Benchmarking branch/create/durability/buffered: Analyzing
+branch/create/durability/buffered
+                        time:   [10.175 µs 10.685 µs 11.680 µs]
+                        thrpt:  [85.616 Kelem/s 93.585 Kelem/s 98.277 Kelem/s]
+                 change:
+                        time:   [-99.929% -99.926% -99.922%] (p = 0.00 < 0.05)
+                        thrpt:  [+127892% +135436% +141708%]
+                        Performance has improved.
+Found 15 outliers among 100 measurements (15.00%)
+  5 (5.00%) low severe
+  3 (3.00%) low mild
+  3 (3.00%) high mild
+  4 (4.00%) high severe
+  branch/create/buffered                        p50=4.17 µs      p95=6.07 µs      p99=8.59 µs      (n=1000)
+  branch/create/buffered                        appends/op=1.0  syncs/op=0.0  bytes/op=384  avg_sync=6238µs
+Benchmarking branch/create/durability/strict
+Benchmarking branch/create/durability/strict: Warming up for 3.0000 s
+Benchmarking branch/create/durability/strict: Collecting 100 samples in estimated 5.5756 s (900 iterations)
+Benchmarking branch/create/durability/strict: Analyzing
+branch/create/durability/strict
+                        time:   [6.1283 ms 6.1426 ms 6.1612 ms]
+                        thrpt:  [162.31  elem/s 162.80  elem/s 163.18  elem/s]
+                 change:
+                        time:   [-61.559% -61.195% -60.855%] (p = 0.00 < 0.05)
+                        thrpt:  [+155.46% +157.70% +160.14%]
+                        Performance has improved.
+Found 3 outliers among 100 measurements (3.00%)
+  1 (1.00%) low mild
+  2 (2.00%) high severe
+  branch/create/strict                          p50=6.15 ms      p95=6.39 ms      p99=6.50 ms      (n=1000)
+  branch/create/strict                          appends/op=1.0  syncs/op=1.0  bytes/op=382  avg_sync=6158µs
+
+
+--- Latency Percentiles: branch/switch ---
+Benchmarking branch/switch/durability/none
+Benchmarking branch/switch/durability/none: Warming up for 3.0000 s
+Benchmarking branch/switch/durability/none: Collecting 100 samples in estimated 5.0021 s (11M iterations)
+Benchmarking branch/switch/durability/none: Analyzing
+branch/switch/durability/none
+                        time:   [451.06 ns 451.92 ns 452.88 ns]
+                        thrpt:  [2.2081 Melem/s 2.2128 Melem/s 2.2170 Melem/s]
+                 change:
+                        time:   [+6.1355% +6.6770% +7.2898%] (p = 0.00 < 0.05)
+                        thrpt:  [-6.7945% -6.2591% -5.7808%]
+                        Performance has regressed.
+Found 11 outliers among 100 measurements (11.00%)
+  2 (2.00%) high mild
+  9 (9.00%) high severe
+  branch/switch/none                            p50=471 ns       p95=661 ns       p99=902 ns       (n=1000)
+Benchmarking branch/switch/durability/buffered
+Benchmarking branch/switch/durability/buffered: Warming up for 3.0000 s
+Benchmarking branch/switch/durability/buffered: Collecting 100 samples in estimated 5.0121 s (621k iterations)
+Benchmarking branch/switch/durability/buffered: Analyzing
+branch/switch/durability/buffered
+                        time:   [8.0123 µs 8.0775 µs 8.1438 µs]
+                        thrpt:  [122.79 Kelem/s 123.80 Kelem/s 124.81 Kelem/s]
+                 change:
+                        time:   [-99.945% -99.942% -99.940%] (p = 0.00 < 0.05)
+                        thrpt:  [+166449% +173154% +181089%]
+                        Performance has improved.
+Found 11 outliers among 100 measurements (11.00%)
+  4 (4.00%) low severe
+  2 (2.00%) low mild
+  2 (2.00%) high mild
+  3 (3.00%) high severe
+  branch/switch/buffered                        p50=1.90 µs      p95=3.04 µs      p99=4.07 µs      (n=1000)
+  branch/switch/buffered                        appends/op=1.0  syncs/op=0.0  bytes/op=49  avg_sync=6178µs
+Benchmarking branch/switch/durability/strict
+Benchmarking branch/switch/durability/strict: Warming up for 3.0000 s
+Benchmarking branch/switch/durability/strict: Collecting 100 samples in estimated 5.5370 s (900 iterations)
+Benchmarking branch/switch/durability/strict: Analyzing
+branch/switch/durability/strict
+                        time:   [6.1600 ms 6.1730 ms 6.1892 ms]
+                        thrpt:  [161.57  elem/s 162.00  elem/s 162.34  elem/s]
+                 change:
+                        time:   [-62.017% -60.882% -60.079%] (p = 0.00 < 0.05)
+                        thrpt:  [+150.50% +155.64% +163.28%]
+                        Performance has improved.
+Found 5 outliers among 100 measurements (5.00%)
+  3 (3.00%) high mild
+  2 (2.00%) high severe
+  branch/switch/strict                          p50=6.12 ms      p95=6.37 ms      p99=6.42 ms      (n=1000)
+  branch/switch/strict                          appends/op=1.0  syncs/op=1.0  bytes/op=47  avg_sync=6153µs
+
+
+--- Latency Percentiles: branch/delete ---
+Benchmarking branch/delete/durability/none
+Benchmarking branch/delete/durability/none: Warming up for 3.0000 s
+Benchmarking branch/delete/durability/none: Collecting 100 samples in estimated 5.1196 s (96k iterations)
+Benchmarking branch/delete/durability/none: Analyzing
+branch/delete/durability/none
+                        time:   [15.813 µs 17.266 µs 18.560 µs]
+                        thrpt:  [53.880 Kelem/s 57.916 Kelem/s 63.241 Kelem/s]
+                 change:
+                        time:   [-12.141% -1.6147% +10.137%] (p = 0.77 > 0.05)
+                        thrpt:  [-9.2039% +1.6412% +13.819%]
+                        No change in performance detected.
+Found 1 outliers among 100 measurements (1.00%)
+  1 (1.00%) high mild
+  branch/delete/none                            p50=5.24 µs      p95=6.14 µs      p99=8.14 µs      (n=1000)
+Benchmarking branch/delete/durability/buffered
+Benchmarking branch/delete/durability/buffered: Warming up for 3.0000 s
+Benchmarking branch/delete/durability/buffered: Collecting 100 samples in estimated 5.3306 s (66k iterations)
+Benchmarking branch/delete/durability/buffered: Analyzing
+branch/delete/durability/buffered
+                        time:   [80.372 µs 94.086 µs 110.31 µs]
+                        thrpt:  [9.0657 Kelem/s 10.629 Kelem/s 12.442 Kelem/s]
+                 change:
+                        time:   [-99.947% -99.942% -99.937%] (p = 0.00 < 0.05)
+                        thrpt:  [+159487% +172891% +187587%]
+                        Performance has improved.
+  branch/delete/buffered                        p50=13.41 µs     p95=18.91 µs     p99=24.00 µs     (n=1000)
+  branch/delete/buffered                        appends/op=5.0  syncs/op=0.0  bytes/op=660  avg_sync=6136µs
+Benchmarking branch/delete/durability/strict
+Benchmarking branch/delete/durability/strict: Warming up for 3.0000 s
+Benchmarking branch/delete/durability/strict: Collecting 100 samples in estimated 6.3026 s (200 iterations)
+Benchmarking branch/delete/durability/strict: Analyzing
+branch/delete/durability/strict
+                        time:   [30.560 ms 30.616 ms 30.683 ms]
+                        thrpt:  [32.592  elem/s 32.663  elem/s 32.723  elem/s]
+                 change:
+                        time:   [-69.370% -69.135% -68.926%] (p = 0.00 < 0.05)
+                        thrpt:  [+221.81% +223.99% +226.48%]
+                        Performance has improved.
+Found 3 outliers among 100 measurements (3.00%)
+  1 (1.00%) high mild
+  2 (2.00%) high severe
+  branch/delete/strict                          p50=30.61 ms     p95=31.19 ms     p99=34.39 ms     (n=1000)
+  branch/delete/strict                          appends/op=5.0  syncs/op=5.0  bytes/op=650  avg_sync=6122µs
+
+     Running benches/event.rs (target/release/deps/event-5e307d5457f39123)
+Gnuplot not found, using plotters backend
+
+--- Latency Percentiles: event/append ---
+=== Hardware ===
+CPU:    AMD Ryzen 7 7800X3D 8-Core Processor
+Cores:  16
+RAM:    61 GB
+OS:     linux (x86_64)
+================
+Benchmarking event/append/durability/none
+Benchmarking event/append/durability/none: Warming up for 3.0000 s
+Benchmarking event/append/durability/none: Collecting 100 samples in estimated 5.9444 s (20k iterations)
+Benchmarking event/append/durability/none: Analyzing
+event/append/durability/none
+                        time:   [833.55 µs 866.47 µs 894.77 µs]
+                        thrpt:  [1.1176 Kelem/s 1.1541 Kelem/s 1.1997 Kelem/s]
+                 change:
+                        time:   [+274.51% +296.65% +319.89%] (p = 0.00 < 0.05)
+                        thrpt:  [-76.184% -74.789% -73.298%]
+                        Performance has regressed.
+Found 1 outliers among 100 measurements (1.00%)
+  1 (1.00%) high mild
+  event/append/none                             p50=1.09 ms      p95=1.22 ms      p99=1.30 ms      (n=1000)
+Benchmarking event/append/durability/buffered
+Benchmarking event/append/durability/buffered: Warming up for 3.0000 s
+Benchmarking event/append/durability/buffered: Collecting 100 samples in estimated 6.0004 s (25k iterations)
+Benchmarking event/append/durability/buffered: Analyzing
+event/append/durability/buffered
+                        time:   [991.84 µs 1.0544 ms 1.1073 ms]
+                        thrpt:  [903.13  elem/s 948.41  elem/s 1.0082 Kelem/s]
+                 change:
+                        time:   [-94.759% -94.350% -93.919%] (p = 0.00 < 0.05)
+                        thrpt:  [+1544.4% +1669.9% +1808.1%]
+                        Performance has improved.
+  event/append/buffered                         p50=945.13 µs    p95=8.47 ms      p99=8.86 ms      (n=1000)
+  event/append/buffered                         appends/op=1.0  syncs/op=0.1  bytes/op=243238  avg_sync=7807µs
+Benchmarking event/append/durability/strict
+Benchmarking event/append/durability/strict: Warming up for 3.0000 s
+Benchmarking event/append/durability/strict: Collecting 100 samples in estimated 5.5481 s (900 iterations)
+Benchmarking event/append/durability/strict: Analyzing
+event/append/durability/strict
+                        time:   [6.2170 ms 6.2305 ms 6.2461 ms]
+                        thrpt:  [160.10  elem/s 160.50  elem/s 160.85  elem/s]
+                 change:
+                        time:   [-58.221% -57.708% -57.168%] (p = 0.00 < 0.05)
+                        thrpt:  [+133.47% +136.45% +139.35%]
+                        Performance has improved.
+Found 2 outliers among 100 measurements (2.00%)
+  2 (2.00%) high severe
+  event/append/strict                           p50=6.19 ms      p95=6.32 ms      p99=6.50 ms      (n=1000)
+  event/append/strict                           appends/op=1.0  syncs/op=1.0  bytes/op=9989  avg_sync=6110µs
+
+
+--- Latency Percentiles: event/read ---
+Benchmarking event/read/durability/none
+Benchmarking event/read/durability/none: Warming up for 3.0000 s
+Benchmarking event/read/durability/none: Collecting 100 samples in estimated 5.0040 s (1.3M iterations)
+Benchmarking event/read/durability/none: Analyzing
+event/read/durability/none
+                        time:   [3.9367 µs 3.9522 µs 3.9680 µs]
+                        thrpt:  [252.02 Kelem/s 253.03 Kelem/s 254.02 Kelem/s]
+                 change:
+                        time:   [-7.5144% -5.2269% -3.0177%] (p = 0.00 < 0.05)
+                        thrpt:  [+3.1116% +5.5152% +8.1250%]
+                        Performance has improved.
+Found 18 outliers among 100 measurements (18.00%)
+  10 (10.00%) low mild
+  3 (3.00%) high mild
+  5 (5.00%) high severe
+  event/read/none                               p50=4.04 µs      p95=9.33 µs      p99=11.17 µs     (n=1000)
+Benchmarking event/read/durability/buffered
+Benchmarking event/read/durability/buffered: Warming up for 3.0000 s
+Benchmarking event/read/durability/buffered: Collecting 100 samples in estimated 5.0193 s (424k iterations)
+Benchmarking event/read/durability/buffered: Analyzing
+event/read/durability/buffered
+                        time:   [11.664 µs 11.770 µs 11.877 µs]
+                        thrpt:  [84.199 Kelem/s 84.965 Kelem/s 85.735 Kelem/s]
+                 change:
+                        time:   [-99.920% -99.917% -99.913%] (p = 0.00 < 0.05)
+                        thrpt:  [+115101% +120206% +125198%]
+                        Performance has improved.
+Found 14 outliers among 100 measurements (14.00%)
+  6 (6.00%) low severe
+  2 (2.00%) low mild
+  2 (2.00%) high mild
+  4 (4.00%) high severe
+  event/read/buffered                           p50=5.41 µs      p95=11.09 µs     p99=14.30 µs     (n=1000)
+  event/read/buffered                           appends/op=1.0  syncs/op=0.0  bytes/op=49  avg_sync=6294µs
+Benchmarking event/read/durability/strict
+Benchmarking event/read/durability/strict: Warming up for 3.0000 s
+Benchmarking event/read/durability/strict: Collecting 100 samples in estimated 5.5619 s (900 iterations)
+Benchmarking event/read/durability/strict: Analyzing
+event/read/durability/strict
+                        time:   [6.1749 ms 6.1861 ms 6.1996 ms]
+                        thrpt:  [161.30  elem/s 161.65  elem/s 161.95  elem/s]
+                 change:
+                        time:   [-61.306% -60.922% -60.519%] (p = 0.00 < 0.05)
+                        thrpt:  [+153.28% +155.90% +158.44%]
+                        Performance has improved.
+Found 2 outliers among 100 measurements (2.00%)
+  1 (1.00%) high mild
+  1 (1.00%) high severe
+  event/read/strict                             p50=6.16 ms      p95=6.39 ms      p99=6.48 ms      (n=1000)
+  event/read/strict                             appends/op=1.0  syncs/op=1.0  bytes/op=47  avg_sync=6160µs
+
+
+--- Latency Percentiles: event/read_by_type ---
+Benchmarking event/read_by_type/durability/none
+Benchmarking event/read_by_type/durability/none: Warming up for 3.0000 s
+
+Warning: Unable to complete 100 samples in 5.0s. You may wish to increase target time to 8.5s, enable flat sampling, or reduce sample count to 50.
+Benchmarking event/read_by_type/durability/none: Collecting 100 samples in estimated 8.5003 s (5050 iterations)
+Benchmarking event/read_by_type/durability/none: Analyzing
+event/read_by_type/durability/none
+                        time:   [1.6854 ms 1.6883 ms 1.6911 ms]
+                        thrpt:  [591.32  elem/s 592.33  elem/s 593.32  elem/s]
+                 change:
+                        time:   [-42.164% -42.042% -41.928%] (p = 0.00 < 0.05)
+                        thrpt:  [+72.200% +72.539% +72.903%]
+                        Performance has improved.
+Found 5 outliers among 100 measurements (5.00%)
+  2 (2.00%) low mild
+  3 (3.00%) high mild
+  event/read_by_type/none                       p50=1.69 ms      p95=1.76 ms      p99=1.79 ms      (n=1000)
+Benchmarking event/read_by_type/durability/buffered
+Benchmarking event/read_by_type/durability/buffered: Warming up for 3.0000 s
+
+Warning: Unable to complete 100 samples in 5.0s. You may wish to increase target time to 9.2s, enable flat sampling, or reduce sample count to 50.
+Benchmarking event/read_by_type/durability/buffered: Collecting 100 samples in estimated 9.1509 s (5050 iterations)
+Benchmarking event/read_by_type/durability/buffered: Analyzing
+event/read_by_type/durability/buffered
+                        time:   [1.7954 ms 1.8074 ms 1.8200 ms]
+                        thrpt:  [549.45  elem/s 553.27  elem/s 556.99  elem/s]
+                 change:
+                        time:   [-88.429% -88.270% -88.094%] (p = 0.00 < 0.05)
+                        thrpt:  [+739.93% +752.48% +764.21%]
+                        Performance has improved.
+Found 4 outliers among 100 measurements (4.00%)
+  2 (2.00%) high mild
+  2 (2.00%) high severe
+  event/read_by_type/buffered                   p50=1.68 ms      p95=1.77 ms      p99=8.33 ms      (n=1000)
+  event/read_by_type/buffered                   appends/op=1.0  syncs/op=0.0  bytes/op=47  avg_sync=6780µs
+Benchmarking event/read_by_type/durability/strict
+Benchmarking event/read_by_type/durability/strict: Warming up for 3.0000 s
+Benchmarking event/read_by_type/durability/strict: Collecting 100 samples in estimated 5.7090 s (700 iterations)
+Benchmarking event/read_by_type/durability/strict: Analyzing
+event/read_by_type/durability/strict
+                        time:   [8.0917 ms 8.1186 ms 8.1472 ms]
+                        thrpt:  [122.74  elem/s 123.17  elem/s 123.58  elem/s]
+                 change:
+                        time:   [-51.479% -50.979% -50.469%] (p = 0.00 < 0.05)
+                        thrpt:  [+101.90% +104.00% +106.10%]
+                        Performance has improved.
+Found 2 outliers among 100 measurements (2.00%)
+  2 (2.00%) high severe
+  event/read_by_type/strict                     p50=8.10 ms      p95=8.59 ms      p99=9.27 ms      (n=1000)
+  event/read_by_type/strict                     appends/op=1.0  syncs/op=1.0  bytes/op=47  avg_sync=6149µs
+
+     Running benches/json.rs (target/release/deps/json-1c0d9d24812b4c38)
+Gnuplot not found, using plotters backend
+
+--- Latency Percentiles: json/set_root ---
+=== Hardware ===
+CPU:    AMD Ryzen 7 7800X3D 8-Core Processor
+Cores:  16
+RAM:    61 GB
+OS:     linux (x86_64)
+================
+Benchmarking json/set_root/durability/none
+Benchmarking json/set_root/durability/none: Warming up for 3.0000 s
+Benchmarking json/set_root/durability/none: Collecting 100 samples in estimated 5.0037 s (581k iterations)
+Benchmarking json/set_root/durability/none: Analyzing
+json/set_root/durability/none
+                        time:   [10.161 µs 11.590 µs 13.421 µs]
+                        thrpt:  [74.510 Kelem/s 86.280 Kelem/s 98.417 Kelem/s]
+                 change:
+                        time:   [-17.254% -7.5547% +2.7161%] (p = 0.18 > 0.05)
+                        thrpt:  [-2.6443% +8.1721% +20.851%]
+                        No change in performance detected.
+Found 3 outliers among 100 measurements (3.00%)
+  2 (2.00%) high mild
+  1 (1.00%) high severe
+  json/set_root/none                            p50=6.10 µs      p95=7.85 µs      p99=10.02 µs     (n=1000)
+Benchmarking json/set_root/durability/buffered
+Benchmarking json/set_root/durability/buffered: Warming up for 3.0000 s
+Benchmarking json/set_root/durability/buffered: Collecting 100 samples in estimated 5.0829 s (197k iterations)
+Benchmarking json/set_root/durability/buffered: Analyzing
+json/set_root/durability/buffered
+                        time:   [23.961 µs 24.378 µs 24.972 µs]
+                        thrpt:  [40.045 Kelem/s 41.020 Kelem/s 41.735 Kelem/s]
+                 change:
+                        time:   [-99.909% -99.904% -99.897%] (p = 0.00 < 0.05)
+                        thrpt:  [+96696% +103571% +110309%]
+                        Performance has improved.
+Found 14 outliers among 100 measurements (14.00%)
+  6 (6.00%) low severe
+  2 (2.00%) low mild
+  1 (1.00%) high mild
+  5 (5.00%) high severe
+  json/set_root/buffered                        p50=9.82 µs      p95=14.67 µs     p99=18.50 µs     (n=1000)
+  json/set_root/buffered                        appends/op=2.0  syncs/op=0.0  bytes/op=623  avg_sync=6155µs
+Benchmarking json/set_root/durability/strict
+Benchmarking json/set_root/durability/strict: Warming up for 3.0000 s
+Benchmarking json/set_root/durability/strict: Collecting 100 samples in estimated 6.1603 s (500 iterations)
+Benchmarking json/set_root/durability/strict: Analyzing
+json/set_root/durability/strict
+                        time:   [12.280 ms 12.303 ms 12.332 ms]
+                        thrpt:  [81.091  elem/s 81.279  elem/s 81.434  elem/s]
+                 change:
+                        time:   [-58.812% -58.308% -57.788%] (p = 0.00 < 0.05)
+                        thrpt:  [+136.90% +139.86% +142.79%]
+                        Performance has improved.
+Found 4 outliers among 100 measurements (4.00%)
+  2 (2.00%) high mild
+  2 (2.00%) high severe
+  json/set_root/strict                          p50=12.27 ms     p95=12.58 ms     p99=12.86 ms     (n=1000)
+  json/set_root/strict                          appends/op=2.0  syncs/op=2.0  bytes/op=619  avg_sync=6130µs
+
+
+--- Latency Percentiles: json/set_path ---
+Benchmarking json/set_path/durability/none
+Benchmarking json/set_path/durability/none: Warming up for 3.0000 s
+Benchmarking json/set_path/durability/none: Collecting 100 samples in estimated 5.0059 s (1.3M iterations)
+Benchmarking json/set_path/durability/none: Analyzing
+json/set_path/durability/none
+                        time:   [3.8127 µs 3.8443 µs 3.8895 µs]
+                        thrpt:  [257.10 Kelem/s 260.13 Kelem/s 262.28 Kelem/s]
+                 change:
+                        time:   [+1.1690% +2.1970% +3.0896%] (p = 0.00 < 0.05)
+                        thrpt:  [-2.9970% -2.1498% -1.1555%]
+                        Performance has regressed.
+Found 7 outliers among 100 measurements (7.00%)
+  4 (4.00%) high mild
+  3 (3.00%) high severe
+  json/set_path/none                            p50=4.34 µs      p95=5.06 µs      p99=5.68 µs      (n=1000)
+Benchmarking json/set_path/durability/buffered
+Benchmarking json/set_path/durability/buffered: Warming up for 3.0000 s
+Benchmarking json/set_path/durability/buffered: Collecting 100 samples in estimated 5.0327 s (242k iterations)
+Benchmarking json/set_path/durability/buffered: Analyzing
+json/set_path/durability/buffered
+                        time:   [20.505 µs 20.697 µs 20.894 µs]
+                        thrpt:  [47.860 Kelem/s 48.315 Kelem/s 48.768 Kelem/s]
+                 change:
+                        time:   [-99.931% -99.928% -99.925%] (p = 0.00 < 0.05)
+                        thrpt:  [+133827% +138874% +144736%]
+                        Performance has improved.
+Found 13 outliers among 100 measurements (13.00%)
+  5 (5.00%) low severe
+  2 (2.00%) low mild
+  3 (3.00%) high mild
+  3 (3.00%) high severe
+  json/set_path/buffered                        p50=7.97 µs      p95=11.64 µs     p99=14.85 µs     (n=1000)
+  json/set_path/buffered                        appends/op=2.0  syncs/op=0.0  bytes/op=500  avg_sync=6182µs
+Benchmarking json/set_path/durability/strict
+Benchmarking json/set_path/durability/strict: Warming up for 3.0000 s
+Benchmarking json/set_path/durability/strict: Collecting 100 samples in estimated 6.1909 s (500 iterations)
+Benchmarking json/set_path/durability/strict: Analyzing
+json/set_path/durability/strict
+                        time:   [12.353 ms 12.380 ms 12.413 ms]
+                        thrpt:  [80.564  elem/s 80.772  elem/s 80.950  elem/s]
+                 change:
+                        time:   [-57.785% -57.332% -56.880%] (p = 0.00 < 0.05)
+                        thrpt:  [+131.91% +134.37% +136.88%]
+                        Performance has improved.
+Found 3 outliers among 100 measurements (3.00%)
+  1 (1.00%) low mild
+  2 (2.00%) high severe
+  json/set_path/strict                          p50=12.31 ms     p95=12.68 ms     p99=16.30 ms     (n=1000)
+  json/set_path/strict                          appends/op=2.0  syncs/op=2.0  bytes/op=493  avg_sync=6213µs
+
+
+--- Latency Percentiles: json/get ---
+Benchmarking json/get/durability/none
+Benchmarking json/get/durability/none: Warming up for 3.0000 s
+Benchmarking json/get/durability/none: Collecting 100 samples in estimated 5.0019 s (1.2M iterations)
+Benchmarking json/get/durability/none: Analyzing
+json/get/durability/none
+                        time:   [4.2190 µs 4.2333 µs 4.2484 µs]
+                        thrpt:  [235.38 Kelem/s 236.22 Kelem/s 237.02 Kelem/s]
+                 change:
+                        time:   [-9.6931% -7.3309% -5.1076%] (p = 0.00 < 0.05)
+                        thrpt:  [+5.3825% +7.9109% +10.734%]
+                        Performance has improved.
+Found 12 outliers among 100 measurements (12.00%)
+  1 (1.00%) low severe
+  4 (4.00%) low mild
+  7 (7.00%) high severe
+  json/get/none                                 p50=3.57 µs      p95=3.93 µs      p99=4.58 µs      (n=1000)
+Benchmarking json/get/durability/buffered
+Benchmarking json/get/durability/buffered: Warming up for 3.0000 s
+Benchmarking json/get/durability/buffered: Collecting 100 samples in estimated 5.0187 s (1.2M iterations)
+Benchmarking json/get/durability/buffered: Analyzing
+json/get/durability/buffered
+                        time:   [4.1084 µs 4.1263 µs 4.1445 µs]
+                        thrpt:  [241.28 Kelem/s 242.35 Kelem/s 243.40 Kelem/s]
+                 change:
+                        time:   [-99.972% -99.971% -99.970%] (p = 0.00 < 0.05)
+                        thrpt:  [+338431% +347812% +361600%]
+                        Performance has improved.
+Found 14 outliers among 100 measurements (14.00%)
+  1 (1.00%) low severe
+  6 (6.00%) low mild
+  2 (2.00%) high mild
+  5 (5.00%) high severe
+  json/get/buffered                             p50=3.54 µs      p95=3.92 µs      p99=4.56 µs      (n=1000)
+Benchmarking json/get/durability/strict
+Benchmarking json/get/durability/strict: Warming up for 3.0000 s
+Benchmarking json/get/durability/strict: Collecting 100 samples in estimated 5.0065 s (1.2M iterations)
+Benchmarking json/get/durability/strict: Analyzing
+json/get/durability/strict
+                        time:   [4.0349 µs 4.0480 µs 4.0612 µs]
+                        thrpt:  [246.23 Kelem/s 247.04 Kelem/s 247.84 Kelem/s]
+                 change:
+                        time:   [-99.974% -99.974% -99.973%] (p = 0.00 < 0.05)
+                        thrpt:  [+372060% +377676% +383076%]
+                        Performance has improved.
+Found 20 outliers among 100 measurements (20.00%)
+  1 (1.00%) low severe
+  10 (10.00%) low mild
+  3 (3.00%) high mild
+  6 (6.00%) high severe
+  json/get/strict                               p50=3.53 µs      p95=3.90 µs      p99=4.41 µs      (n=1000)
+
+
+--- Latency Percentiles: json/list ---
+Benchmarking json/list/durability/none
+Benchmarking json/list/durability/none: Warming up for 3.0000 s
+Benchmarking json/list/durability/none: Collecting 100 samples in estimated 9.0584 s (10k iterations)
+Benchmarking json/list/durability/none: Analyzing
+json/list/durability/none
+                        time:   [893.53 µs 895.45 µs 897.38 µs]
+                        thrpt:  [1.1144 Kelem/s 1.1168 Kelem/s 1.1192 Kelem/s]
+                 change:
+                        time:   [-1.9885% -1.5953% -1.0241%] (p = 0.00 < 0.05)
+                        thrpt:  [+1.0347% +1.6211% +2.0289%]
+                        Performance has improved.
+Found 10 outliers among 100 measurements (10.00%)
+  8 (8.00%) high mild
+  2 (2.00%) high severe
+  json/list/none                                p50=899.88 µs    p95=918.82 µs    p99=966.58 µs    (n=1000)
+Benchmarking json/list/durability/buffered
+Benchmarking json/list/durability/buffered: Warming up for 3.0000 s
+Benchmarking json/list/durability/buffered: Collecting 100 samples in estimated 9.8671 s (10k iterations)
+Benchmarking json/list/durability/buffered: Analyzing
+json/list/durability/buffered
+                        time:   [959.50 µs 965.38 µs 971.41 µs]
+                        thrpt:  [1.0294 Kelem/s 1.0359 Kelem/s 1.0422 Kelem/s]
+                 change:
+                        time:   [-93.027% -92.927% -92.827%] (p = 0.00 < 0.05)
+                        thrpt:  [+1294.0% +1313.9% +1334.1%]
+                        Performance has improved.
+Found 2 outliers among 100 measurements (2.00%)
+  1 (1.00%) high mild
+  1 (1.00%) high severe
+  json/list/buffered                            p50=903.37 µs    p95=989.07 µs    p99=7.04 ms      (n=1000)
+  json/list/buffered                            appends/op=1.0  syncs/op=0.0  bytes/op=47  avg_sync=6616µs
+Benchmarking json/list/durability/strict
+Benchmarking json/list/durability/strict: Warming up for 3.0000 s
+Benchmarking json/list/durability/strict: Collecting 100 samples in estimated 5.0991 s (700 iterations)
+Benchmarking json/list/durability/strict: Analyzing
+json/list/durability/strict
+                        time:   [7.2409 ms 7.2585 ms 7.2780 ms]
+                        thrpt:  [137.40  elem/s 137.77  elem/s 138.10  elem/s]
+                 change:
+                        time:   [-44.587% -43.806% -43.074%] (p = 0.00 < 0.05)
+                        thrpt:  [+75.667% +77.956% +80.464%]
+                        Performance has improved.
+Found 3 outliers among 100 measurements (3.00%)
+  1 (1.00%) low mild
+  1 (1.00%) high mild
+  1 (1.00%) high severe
+  json/list/strict                              p50=7.28 ms      p95=7.57 ms      p99=7.87 ms      (n=1000)
+  json/list/strict                              appends/op=1.0  syncs/op=1.0  bytes/op=47  avg_sync=6138µs
+
+     Running benches/kv.rs (target/release/deps/kv-21eb82e5ec3da27f)
+Gnuplot not found, using plotters backend
+
+--- Latency Percentiles: kv/put ---
+=== Hardware ===
+CPU:    AMD Ryzen 7 7800X3D 8-Core Processor
+Cores:  16
+RAM:    61 GB
+OS:     linux (x86_64)
+================
+Benchmarking kv/put/durability/128B/none
+Benchmarking kv/put/durability/128B/none: Warming up for 3.0000 s
+Benchmarking kv/put/durability/128B/none: Collecting 100 samples in estimated 5.0104 s (2.0M iterations)
+Benchmarking kv/put/durability/128B/none: Analyzing
+kv/put/durability/128B/none
+                        time:   [3.4814 µs 4.2297 µs 5.7043 µs]
+                        thrpt:  [175.31 Kelem/s 236.42 Kelem/s 287.24 Kelem/s]
+                 change:
+                        time:   [-20.713% -0.2333% +27.347%] (p = 0.98 > 0.05)
+                        thrpt:  [-21.475% +0.2339% +26.123%]
+                        No change in performance detected.
+Found 1 outliers among 100 measurements (1.00%)
+  1 (1.00%) high severe
+  kv/put/128B/none                              p50=912 ns       p95=1.35 µs      p99=2.93 µs      (n=1000)
+Benchmarking kv/put/durability/128B/buffered
+Benchmarking kv/put/durability/128B/buffered: Warming up for 3.0000 s
+Benchmarking kv/put/durability/128B/buffered: Collecting 100 samples in estimated 5.0667 s (369k iterations)
+Benchmarking kv/put/durability/128B/buffered: Analyzing
+kv/put/durability/128B/buffered
+                        time:   [9.9660 µs 10.248 µs 10.702 µs]
+                        thrpt:  [93.440 Kelem/s 97.583 Kelem/s 100.34 Kelem/s]
+                 change:
+                        time:   [-99.850% -99.841% -99.831%] (p = 0.00 < 0.05)
+                        thrpt:  [+59161% +62786% +66702%]
+                        Performance has improved.
+Found 14 outliers among 100 measurements (14.00%)
+  7 (7.00%) low severe
+  1 (1.00%) low mild
+  2 (2.00%) high mild
+  4 (4.00%) high severe
+  kv/put/128B/buffered                          p50=2.98 µs      p95=5.09 µs      p99=7.56 µs      (n=1000)
+  kv/put/128B/buffered                          appends/op=1.0  syncs/op=0.0  bytes/op=338  avg_sync=15079µs
+Benchmarking kv/put/durability/128B/strict
+Benchmarking kv/put/durability/128B/strict: Warming up for 3.0000 s
+Benchmarking kv/put/durability/128B/strict: Collecting 100 samples in estimated 5.5605 s (900 iterations)
+Benchmarking kv/put/durability/128B/strict: Analyzing
+kv/put/durability/128B/strict
+                        time:   [6.1446 ms 6.1564 ms 6.1711 ms]
+                        thrpt:  [162.05  elem/s 162.43  elem/s 162.74  elem/s]
+                 change:
+                        time:   [-6.4606% -5.5058% -4.8736%] (p = 0.00 < 0.05)
+                        thrpt:  [+5.1233% +5.8265% +6.9068%]
+                        Performance has improved.
+Found 3 outliers among 100 measurements (3.00%)
+  1 (1.00%) low mild
+  2 (2.00%) high severe
+  kv/put/128B/strict                            p50=6.13 ms      p95=6.24 ms      p99=6.32 ms      (n=1000)
+  kv/put/128B/strict                            appends/op=1.0  syncs/op=1.0  bytes/op=336  avg_sync=6135µs
+Benchmarking kv/put/durability/1KB/none
+Benchmarking kv/put/durability/1KB/none: Warming up for 3.0000 s
+Benchmarking kv/put/durability/1KB/none: Collecting 100 samples in estimated 5.0054 s (2.1M iterations)
+Benchmarking kv/put/durability/1KB/none: Analyzing
+kv/put/durability/1KB/none
+                        time:   [4.0473 µs 4.8119 µs 6.2853 µs]
+                        thrpt:  [159.10 Kelem/s 207.82 Kelem/s 247.08 Kelem/s]
+                 change:
+                        time:   [-18.685% +0.8359% +23.776%] (p = 0.94 > 0.05)
+                        thrpt:  [-19.209% -0.8290% +22.979%]
+                        No change in performance detected.
+Found 1 outliers among 100 measurements (1.00%)
+  1 (1.00%) high severe
+  kv/put/1KB/none                               p50=1.07 µs      p95=1.57 µs      p99=3.11 µs      (n=1000)
+Benchmarking kv/put/durability/1KB/buffered
+Benchmarking kv/put/durability/1KB/buffered: Warming up for 3.0000 s
+Benchmarking kv/put/durability/1KB/buffered: Collecting 100 samples in estimated 5.0648 s (374k iterations)
+Benchmarking kv/put/durability/1KB/buffered: Analyzing
+kv/put/durability/1KB/buffered
+                        time:   [13.220 µs 13.532 µs 14.030 µs]
+                        thrpt:  [71.276 Kelem/s 73.898 Kelem/s 75.645 Kelem/s]
+                 change:
+                        time:   [-99.794% -99.784% -99.774%] (p = 0.00 < 0.05)
+                        thrpt:  [+44084% +46103% +48391%]
+                        Performance has improved.
+Found 16 outliers among 100 measurements (16.00%)
+  6 (6.00%) low severe
+  4 (4.00%) low mild
+  1 (1.00%) high mild
+  5 (5.00%) high severe
+  kv/put/1KB/buffered                           p50=5.67 µs      p95=9.08 µs      p99=11.79 µs     (n=1000)
+  kv/put/1KB/buffered                           appends/op=1.0  syncs/op=0.0  bytes/op=1234  avg_sync=7283µs
+Benchmarking kv/put/durability/1KB/strict
+Benchmarking kv/put/durability/1KB/strict: Warming up for 3.0000 s
+Benchmarking kv/put/durability/1KB/strict: Collecting 100 samples in estimated 5.5902 s (900 iterations)
+Benchmarking kv/put/durability/1KB/strict: Analyzing
+kv/put/durability/1KB/strict
+                        time:   [6.1785 ms 6.1939 ms 6.2115 ms]
+                        thrpt:  [160.99  elem/s 161.45  elem/s 161.85  elem/s]
+                 change:
+                        time:   [-5.5069% -5.1232% -4.7541%] (p = 0.00 < 0.05)
+                        thrpt:  [+4.9914% +5.3999% +5.8278%]
+                        Performance has improved.
+Found 3 outliers among 100 measurements (3.00%)
+  1 (1.00%) low mild
+  2 (2.00%) high severe
+  kv/put/1KB/strict                             p50=6.18 ms      p95=6.41 ms      p99=6.70 ms      (n=1000)
+  kv/put/1KB/strict                             appends/op=1.0  syncs/op=1.0  bytes/op=1232  avg_sync=6186µs
+Benchmarking kv/put/durability/8KB/none
+Benchmarking kv/put/durability/8KB/none: Warming up for 3.0000 s
+Benchmarking kv/put/durability/8KB/none: Collecting 100 samples in estimated 5.0136 s (1.5M iterations)
+Benchmarking kv/put/durability/8KB/none: Analyzing
+kv/put/durability/8KB/none
+                        time:   [5.7187 µs 6.0991 µs 6.8542 µs]
+                        thrpt:  [145.90 Kelem/s 163.96 Kelem/s 174.86 Kelem/s]
+                 change:
+                        time:   [-10.230% +0.0789% +11.581%] (p = 0.98 > 0.05)
+                        thrpt:  [-10.379% -0.0788% +11.396%]
+                        No change in performance detected.
+Found 1 outliers among 100 measurements (1.00%)
+  1 (1.00%) high severe
+  kv/put/8KB/none                               p50=3.87 µs      p95=6.60 µs      p99=9.00 µs      (n=1000)
+Benchmarking kv/put/durability/8KB/buffered
+Benchmarking kv/put/durability/8KB/buffered: Warming up for 3.0000 s
+Benchmarking kv/put/durability/8KB/buffered: Collecting 100 samples in estimated 5.0986 s (116k iterations)
+Benchmarking kv/put/durability/8KB/buffered: Analyzing
+kv/put/durability/8KB/buffered
+                        time:   [43.508 µs 44.310 µs 45.264 µs]
+                        thrpt:  [22.092 Kelem/s 22.568 Kelem/s 22.984 Kelem/s]
+                 change:
+                        time:   [-99.319% -99.287% -99.258%] (p = 0.00 < 0.05)
+                        thrpt:  [+13386% +13926% +14594%]
+                        Performance has improved.
+Found 15 outliers among 100 measurements (15.00%)
+  10 (10.00%) low mild
+  2 (2.00%) high mild
+  3 (3.00%) high severe
+  kv/put/8KB/buffered                           p50=26.72 µs     p95=35.40 µs     p99=43.99 µs     (n=1000)
+  kv/put/8KB/buffered                           appends/op=1.0  syncs/op=0.0  bytes/op=8402  avg_sync=8634µs
+Benchmarking kv/put/durability/8KB/strict
+Benchmarking kv/put/durability/8KB/strict: Warming up for 3.0000 s
+Benchmarking kv/put/durability/8KB/strict: Collecting 100 samples in estimated 5.6230 s (900 iterations)
+Benchmarking kv/put/durability/8KB/strict: Analyzing
+kv/put/durability/8KB/strict
+                        time:   [6.2229 ms 6.2366 ms 6.2524 ms]
+                        thrpt:  [159.94  elem/s 160.34  elem/s 160.70  elem/s]
+                 change:
+                        time:   [-4.8709% -4.4965% -4.1394%] (p = 0.00 < 0.05)
+                        thrpt:  [+4.3181% +4.7082% +5.1204%]
+                        Performance has improved.
+Found 8 outliers among 100 measurements (8.00%)
+  5 (5.00%) high mild
+  3 (3.00%) high severe
+  kv/put/8KB/strict                             p50=6.20 ms      p95=6.45 ms      p99=13.19 ms     (n=1000)
+  kv/put/8KB/strict                             appends/op=1.0  syncs/op=1.0  bytes/op=8400  avg_sync=6286µs
+
+
+--- Latency Percentiles: kv/get ---
+Benchmarking kv/get/durability/128B/none
+Benchmarking kv/get/durability/128B/none: Warming up for 3.0000 s
+Benchmarking kv/get/durability/128B/none: Collecting 100 samples in estimated 5.0009 s (9.6M iterations)
+Benchmarking kv/get/durability/128B/none: Analyzing
+kv/get/durability/128B/none
+                        time:   [516.20 ns 516.94 ns 517.71 ns]
+                        thrpt:  [1.9316 Melem/s 1.9345 Melem/s 1.9372 Melem/s]
+                 change:
+                        time:   [-32.035% -31.614% -31.323%] (p = 0.00 < 0.05)
+                        thrpt:  [+45.608% +46.229% +47.134%]
+                        Performance has improved.
+Found 7 outliers among 100 measurements (7.00%)
+  5 (5.00%) low mild
+  2 (2.00%) high mild
+  kv/get/128B/none                              p50=551 ns       p95=842 ns       p99=1.13 µs      (n=1000)
+Benchmarking kv/get/durability/128B/buffered
+Benchmarking kv/get/durability/128B/buffered: Warming up for 3.0000 s
+Benchmarking kv/get/durability/128B/buffered: Collecting 100 samples in estimated 5.0006 s (10M iterations)
+Benchmarking kv/get/durability/128B/buffered: Analyzing
+kv/get/durability/128B/buffered
+                        time:   [490.37 ns 491.37 ns 492.61 ns]
+                        thrpt:  [2.0300 Melem/s 2.0351 Melem/s 2.0393 Melem/s]
+                 change:
+                        time:   [-99.992% -99.992% -99.992%] (p = 0.00 < 0.05)
+                        thrpt:  [+1255241% +1259007% +1263150%]
+                        Performance has improved.
+Found 9 outliers among 100 measurements (9.00%)
+  1 (1.00%) low severe
+  2 (2.00%) low mild
+  4 (4.00%) high mild
+  2 (2.00%) high severe
+  kv/get/128B/buffered                          p50=592 ns       p95=902 ns       p99=1.07 µs      (n=1000)
+Benchmarking kv/get/durability/128B/strict
+Benchmarking kv/get/durability/128B/strict: Warming up for 3.0000 s
+Benchmarking kv/get/durability/128B/strict: Collecting 100 samples in estimated 5.0006 s (10M iterations)
+Benchmarking kv/get/durability/128B/strict: Analyzing
+kv/get/durability/128B/strict
+                        time:   [479.34 ns 480.22 ns 481.23 ns]
+                        thrpt:  [2.0780 Melem/s 2.0824 Melem/s 2.0862 Melem/s]
+                 change:
+                        time:   [-99.993% -99.993% -99.993%] (p = 0.00 < 0.05)
+                        thrpt:  [+1342584% +1354110% +1363730%]
+                        Performance has improved.
+Found 9 outliers among 100 measurements (9.00%)
+  3 (3.00%) low mild
+  3 (3.00%) high mild
+  3 (3.00%) high severe
+  kv/get/128B/strict                            p50=631 ns       p95=922 ns       p99=1.09 µs      (n=1000)
+Benchmarking kv/get/durability/1KB/none
+Benchmarking kv/get/durability/1KB/none: Warming up for 3.0000 s
+Benchmarking kv/get/durability/1KB/none: Collecting 100 samples in estimated 5.0011 s (9.7M iterations)
+Benchmarking kv/get/durability/1KB/none: Analyzing
+kv/get/durability/1KB/none
+                        time:   [512.39 ns 513.35 ns 514.42 ns]
+                        thrpt:  [1.9440 Melem/s 1.9480 Melem/s 1.9516 Melem/s]
+                 change:
+                        time:   [-33.866% -33.659% -33.479%] (p = 0.00 < 0.05)
+                        thrpt:  [+50.328% +50.736% +51.209%]
+                        Performance has improved.
+Found 7 outliers among 100 measurements (7.00%)
+  1 (1.00%) low mild
+  4 (4.00%) high mild
+  2 (2.00%) high severe
+  kv/get/1KB/none                               p50=672 ns       p95=992 ns       p99=1.14 µs      (n=1000)
+Benchmarking kv/get/durability/1KB/buffered
+Benchmarking kv/get/durability/1KB/buffered: Warming up for 3.0000 s
+Benchmarking kv/get/durability/1KB/buffered: Collecting 100 samples in estimated 5.0021 s (9.8M iterations)
+Benchmarking kv/get/durability/1KB/buffered: Analyzing
+kv/get/durability/1KB/buffered
+                        time:   [511.18 ns 512.12 ns 513.02 ns]
+                        thrpt:  [1.9492 Melem/s 1.9527 Melem/s 1.9563 Melem/s]
+                 change:
+                        time:   [-99.992% -99.992% -99.992%] (p = 0.00 < 0.05)
+                        thrpt:  [+1195593% +1199163% +1202971%]
+                        Performance has improved.
+Found 3 outliers among 100 measurements (3.00%)
+  1 (1.00%) low mild
+  2 (2.00%) high mild
+  kv/get/1KB/buffered                           p50=681 ns       p95=962 ns       p99=1.11 µs      (n=1000)
+Benchmarking kv/get/durability/1KB/strict
+Benchmarking kv/get/durability/1KB/strict: Warming up for 3.0000 s
+Benchmarking kv/get/durability/1KB/strict: Collecting 100 samples in estimated 5.0025 s (9.7M iterations)
+Benchmarking kv/get/durability/1KB/strict: Analyzing
+kv/get/durability/1KB/strict
+                        time:   [509.46 ns 510.09 ns 510.77 ns]
+                        thrpt:  [1.9578 Melem/s 1.9604 Melem/s 1.9629 Melem/s]
+                 change:
+                        time:   [-99.992% -99.992% -99.992%] (p = 0.00 < 0.05)
+                        thrpt:  [+1273565% +1278248% +1283112%]
+                        Performance has improved.
+Found 4 outliers among 100 measurements (4.00%)
+  3 (3.00%) high mild
+  1 (1.00%) high severe
+  kv/get/1KB/strict                             p50=711 ns       p95=982 ns       p99=1.24 µs      (n=1000)
+Benchmarking kv/get/durability/8KB/none
+Benchmarking kv/get/durability/8KB/none: Warming up for 3.0000 s
+Benchmarking kv/get/durability/8KB/none: Collecting 100 samples in estimated 5.0030 s (5.7M iterations)
+Benchmarking kv/get/durability/8KB/none: Analyzing
+kv/get/durability/8KB/none
+                        time:   [874.10 ns 876.84 ns 880.14 ns]
+                        thrpt:  [1.1362 Melem/s 1.1405 Melem/s 1.1440 Melem/s]
+                 change:
+                        time:   [-37.965% -37.378% -36.803%] (p = 0.00 < 0.05)
+                        thrpt:  [+58.235% +59.689% +61.200%]
+                        Performance has improved.
+Found 5 outliers among 100 measurements (5.00%)
+  3 (3.00%) high mild
+  2 (2.00%) high severe
+  kv/get/8KB/none                               p50=1.14 µs      p95=1.50 µs      p99=1.74 µs      (n=1000)
+Benchmarking kv/get/durability/8KB/buffered
+Benchmarking kv/get/durability/8KB/buffered: Warming up for 3.0000 s
+Benchmarking kv/get/durability/8KB/buffered: Collecting 100 samples in estimated 5.0025 s (5.9M iterations)
+Benchmarking kv/get/durability/8KB/buffered: Analyzing
+kv/get/durability/8KB/buffered
+                        time:   [862.83 ns 865.26 ns 867.76 ns]
+                        thrpt:  [1.1524 Melem/s 1.1557 Melem/s 1.1590 Melem/s]
+                 change:
+                        time:   [-99.986% -99.986% -99.986%] (p = 0.00 < 0.05)
+                        thrpt:  [+711856% +714419% +717300%]
+                        Performance has improved.
+Found 3 outliers among 100 measurements (3.00%)
+  3 (3.00%) high mild
+  kv/get/8KB/buffered                           p50=1.08 µs      p95=1.45 µs      p99=1.67 µs      (n=1000)
+Benchmarking kv/get/durability/8KB/strict
+Benchmarking kv/get/durability/8KB/strict: Warming up for 3.0000 s
+Benchmarking kv/get/durability/8KB/strict: Collecting 100 samples in estimated 5.0027 s (5.8M iterations)
+Benchmarking kv/get/durability/8KB/strict: Analyzing
+kv/get/durability/8KB/strict
+                        time:   [861.36 ns 866.93 ns 873.65 ns]
+                        thrpt:  [1.1446 Melem/s 1.1535 Melem/s 1.1610 Melem/s]
+                 change:
+                        time:   [-99.987% -99.987% -99.987%] (p = 0.00 < 0.05)
+                        thrpt:  [+748406% +752285% +756461%]
+                        Performance has improved.
+Found 7 outliers among 100 measurements (7.00%)
+  6 (6.00%) high mild
+  1 (1.00%) high severe
+  kv/get/8KB/strict                             p50=1.14 µs      p95=1.51 µs      p99=1.69 µs      (n=1000)
+
+
+--- Latency Percentiles: kv/delete ---
+Benchmarking kv/delete/durability/none
+Benchmarking kv/delete/durability/none: Warming up for 3.0000 s
+Benchmarking kv/delete/durability/none: Collecting 100 samples in estimated 5.0039 s (2.2M iterations)
+Benchmarking kv/delete/durability/none: Analyzing
+kv/delete/durability/none
+                        time:   [2.1966 µs 2.2144 µs 2.2411 µs]
+                        thrpt:  [446.20 Kelem/s 451.59 Kelem/s 455.25 Kelem/s]
+                 change:
+                        time:   [-1.7590% +1.2535% +3.6699%] (p = 0.44 > 0.05)
+                        thrpt:  [-3.5400% -1.2380% +1.7905%]
+                        No change in performance detected.
+Found 8 outliers among 100 measurements (8.00%)
+  3 (3.00%) low mild
+  2 (2.00%) high mild
+  3 (3.00%) high severe
+  kv/delete/none                                p50=2.33 µs      p95=2.77 µs      p99=3.14 µs      (n=1000)
+Benchmarking kv/delete/durability/buffered
+Benchmarking kv/delete/durability/buffered: Warming up for 3.0000 s
+Benchmarking kv/delete/durability/buffered: Collecting 100 samples in estimated 5.0955 s (222k iterations)
+Benchmarking kv/delete/durability/buffered: Analyzing
+kv/delete/durability/buffered
+                        time:   [22.460 µs 22.733 µs 23.010 µs]
+                        thrpt:  [43.459 Kelem/s 43.990 Kelem/s 44.523 Kelem/s]
+                 change:
+                        time:   [-99.822% -99.813% -99.801%] (p = 0.00 < 0.05)
+                        thrpt:  [+50052% +53429% +56237%]
+                        Performance has improved.
+Found 10 outliers among 100 measurements (10.00%)
+  4 (4.00%) low severe
+  1 (1.00%) low mild
+  2 (2.00%) high mild
+  3 (3.00%) high severe
+  kv/delete/buffered                            p50=8.60 µs      p95=12.55 µs     p99=15.62 µs     (n=1000)
+  kv/delete/buffered                            appends/op=2.0  syncs/op=0.0  bytes/op=1433  avg_sync=10670µs
+Benchmarking kv/delete/durability/strict
+Benchmarking kv/delete/durability/strict: Warming up for 3.0000 s
+Benchmarking kv/delete/durability/strict: Collecting 100 samples in estimated 6.1469 s (500 iterations)
+Benchmarking kv/delete/durability/strict: Analyzing
+kv/delete/durability/strict
+                        time:   [12.214 ms 12.232 ms 12.255 ms]
+                        thrpt:  [81.598  elem/s 81.751  elem/s 81.876  elem/s]
+                 change:
+                        time:   [-11.575% -8.9450% -6.9655%] (p = 0.00 < 0.05)
+                        thrpt:  [+7.4870% +9.8237% +13.091%]
+                        Performance has improved.
+Found 2 outliers among 100 measurements (2.00%)
+  1 (1.00%) high mild
+  1 (1.00%) high severe
+  kv/delete/strict                              p50=12.29 ms     p95=12.56 ms     p99=16.03 ms     (n=1000)
+  kv/delete/strict                              appends/op=2.0  syncs/op=2.0  bytes/op=1429  avg_sync=6162µs
+
+
+--- Latency Percentiles: kv/list_prefix ---
+Benchmarking kv/list_prefix/durability/none
+Benchmarking kv/list_prefix/durability/none: Warming up for 3.0000 s
+Benchmarking kv/list_prefix/durability/none: Collecting 100 samples in estimated 5.0826 s (242k iterations)
+Benchmarking kv/list_prefix/durability/none: Analyzing
+kv/list_prefix/durability/none
+                        time:   [20.646 µs 20.669 µs 20.695 µs]
+                        thrpt:  [48.321 Kelem/s 48.381 Kelem/s 48.435 Kelem/s]
+                 change:
+                        time:   [-5.4004% -5.0198% -4.6362%] (p = 0.00 < 0.05)
+                        thrpt:  [+4.8616% +5.2851% +5.7087%]
+                        Performance has improved.
+Found 5 outliers among 100 measurements (5.00%)
+  1 (1.00%) low mild
+  4 (4.00%) high mild
+  kv/list_prefix/none                           p50=20.52 µs     p95=21.91 µs     p99=29.32 µs     (n=1000)
+Benchmarking kv/list_prefix/durability/buffered
+Benchmarking kv/list_prefix/durability/buffered: Warming up for 3.0000 s
+Benchmarking kv/list_prefix/durability/buffered: Collecting 100 samples in estimated 5.1374 s (177k iterations)
+Benchmarking kv/list_prefix/durability/buffered: Analyzing
+kv/list_prefix/durability/buffered
+                        time:   [28.419 µs 28.710 µs 29.007 µs]
+                        thrpt:  [34.474 Kelem/s 34.831 Kelem/s 35.188 Kelem/s]
+                 change:
+                        time:   [-99.550% -99.538% -99.524%] (p = 0.00 < 0.05)
+                        thrpt:  [+20917% +21525% +22110%]
+                        Performance has improved.
+Found 16 outliers among 100 measurements (16.00%)
+  12 (12.00%) low mild
+  2 (2.00%) high mild
+  2 (2.00%) high severe
+  kv/list_prefix/buffered                       p50=21.56 µs     p95=26.69 µs     p99=33.50 µs     (n=1000)
+  kv/list_prefix/buffered                       appends/op=1.0  syncs/op=0.0  bytes/op=49  avg_sync=6597µs
+Benchmarking kv/list_prefix/durability/strict
+Benchmarking kv/list_prefix/durability/strict: Warming up for 3.0000 s
+Benchmarking kv/list_prefix/durability/strict: Collecting 100 samples in estimated 5.6060 s (900 iterations)
+Benchmarking kv/list_prefix/durability/strict: Analyzing
+kv/list_prefix/durability/strict
+                        time:   [6.2153 ms 6.2313 ms 6.2497 ms]
+                        thrpt:  [160.01  elem/s 160.48  elem/s 160.89  elem/s]
+                 change:
+                        time:   [-6.1632% -5.8391% -5.5109%] (p = 0.00 < 0.05)
+                        thrpt:  [+5.8323% +6.2012% +6.5680%]
+                        Performance has improved.
+Found 2 outliers among 100 measurements (2.00%)
+  2 (2.00%) high severe
+  kv/list_prefix/strict                         p50=6.19 ms      p95=6.42 ms      p99=6.51 ms      (n=1000)
+  kv/list_prefix/strict                         appends/op=1.0  syncs/op=1.0  bytes/op=47  avg_sync=6178µs
+
+     Running benches/state.rs (target/release/deps/state-b386a9e9d5348e2c)
+Gnuplot not found, using plotters backend
+
+--- Latency Percentiles: state/set ---
+=== Hardware ===
+CPU:    AMD Ryzen 7 7800X3D 8-Core Processor
+Cores:  16
+RAM:    61 GB
+OS:     linux (x86_64)
+================
+Benchmarking state/set/durability/none
+Benchmarking state/set/durability/none: Warming up for 3.0000 s
+Benchmarking state/set/durability/none: Collecting 100 samples in estimated 5.0012 s (2.2M iterations)
+Benchmarking state/set/durability/none: Analyzing
+state/set/durability/none
+                        time:   [2.2762 µs 2.3087 µs 2.3777 µs]
+                        thrpt:  [420.57 Kelem/s 433.14 Kelem/s 439.33 Kelem/s]
+                 change:
+                        time:   [-0.2588% +2.0140% +4.3653%] (p = 0.05 < 0.05)
+                        thrpt:  [-4.1827% -1.9743% +0.2595%]
+                        Change within noise threshold.
+Found 2 outliers among 100 measurements (2.00%)
+  1 (1.00%) low mild
+  1 (1.00%) high severe
+  state/set/none                                p50=2.27 µs      p95=3.94 µs      p99=5.64 µs      (n=1000)
+Benchmarking state/set/durability/buffered
+Benchmarking state/set/durability/buffered: Warming up for 3.0000 s
+Benchmarking state/set/durability/buffered: Collecting 100 samples in estimated 5.0039 s (460k iterations)
+Benchmarking state/set/durability/buffered: Analyzing
+state/set/durability/buffered
+                        time:   [10.766 µs 10.871 µs 10.975 µs]
+                        thrpt:  [91.117 Kelem/s 91.989 Kelem/s 92.885 Kelem/s]
+                 change:
+                        time:   [-99.924% -99.917% -99.906%] (p = 0.00 < 0.05)
+                        thrpt:  [+105940% +120079% +130701%]
+                        Performance has improved.
+Found 13 outliers among 100 measurements (13.00%)
+  5 (5.00%) low severe
+  2 (2.00%) low mild
+  3 (3.00%) high mild
+  3 (3.00%) high severe
+  state/set/buffered                            p50=4.18 µs      p95=6.61 µs      p99=9.26 µs      (n=1000)
+  state/set/buffered                            appends/op=1.0  syncs/op=0.0  bytes/op=389  avg_sync=6248µs
+Benchmarking state/set/durability/strict
+Benchmarking state/set/durability/strict: Warming up for 3.0000 s
+Benchmarking state/set/durability/strict: Collecting 100 samples in estimated 5.5186 s (900 iterations)
+Benchmarking state/set/durability/strict: Analyzing
+state/set/durability/strict
+                        time:   [6.1070 ms 6.1197 ms 6.1349 ms]
+                        thrpt:  [163.00  elem/s 163.41  elem/s 163.75  elem/s]
+                 change:
+                        time:   [-62.368% -61.289% -60.452%] (p = 0.00 < 0.05)
+                        thrpt:  [+152.86% +158.32% +165.73%]
+                        Performance has improved.
+Found 2 outliers among 100 measurements (2.00%)
+  2 (2.00%) high severe
+  state/set/strict                              p50=6.12 ms      p95=6.32 ms      p99=6.43 ms      (n=1000)
+  state/set/strict                              appends/op=1.0  syncs/op=1.0  bytes/op=385  avg_sync=6138µs
+
+
+--- Latency Percentiles: state/read ---
+Benchmarking state/read/durability/none
+Benchmarking state/read/durability/none: Warming up for 3.0000 s
+Benchmarking state/read/durability/none: Collecting 100 samples in estimated 5.0014 s (5.7M iterations)
+Benchmarking state/read/durability/none: Analyzing
+state/read/durability/none
+                        time:   [871.32 ns 873.49 ns 875.68 ns]
+                        thrpt:  [1.1420 Melem/s 1.1448 Melem/s 1.1477 Melem/s]
+                 change:
+                        time:   [-25.903% -23.141% -20.539%] (p = 0.00 < 0.05)
+                        thrpt:  [+25.848% +30.108% +34.958%]
+                        Performance has improved.
+Found 8 outliers among 100 measurements (8.00%)
+  2 (2.00%) low severe
+  6 (6.00%) low mild
+  state/read/none                               p50=872 ns       p95=1.10 µs      p99=1.38 µs      (n=1000)
+Benchmarking state/read/durability/buffered
+Benchmarking state/read/durability/buffered: Warming up for 3.0000 s
+Benchmarking state/read/durability/buffered: Collecting 100 samples in estimated 5.0013 s (5.7M iterations)
+Benchmarking state/read/durability/buffered: Analyzing
+state/read/durability/buffered
+                        time:   [871.66 ns 873.97 ns 876.22 ns]
+                        thrpt:  [1.1413 Melem/s 1.1442 Melem/s 1.1472 Melem/s]
+                 change:
+                        time:   [-99.994% -99.994% -99.994%] (p = 0.00 < 0.05)
+                        thrpt:  [+1648824% +1669060% +1689158%]
+                        Performance has improved.
+Found 3 outliers among 100 measurements (3.00%)
+  3 (3.00%) low mild
+  state/read/buffered                           p50=871 ns       p95=1.10 µs      p99=1.33 µs      (n=1000)
+Benchmarking state/read/durability/strict
+Benchmarking state/read/durability/strict: Warming up for 3.0000 s
+Benchmarking state/read/durability/strict: Collecting 100 samples in estimated 5.0021 s (5.6M iterations)
+Benchmarking state/read/durability/strict: Analyzing
+state/read/durability/strict
+                        time:   [878.03 ns 880.71 ns 883.35 ns]
+                        thrpt:  [1.1321 Melem/s 1.1354 Melem/s 1.1389 Melem/s]
+                 change:
+                        time:   [-99.995% -99.994% -99.994%] (p = 0.00 < 0.05)
+                        thrpt:  [+1791179% +1808155% +1825180%]
+                        Performance has improved.
+Found 9 outliers among 100 measurements (9.00%)
+  6 (6.00%) low mild
+  2 (2.00%) high mild
+  1 (1.00%) high severe
+  state/read/strict                             p50=882 ns       p95=1.12 µs      p99=1.44 µs      (n=1000)
+
+
+--- Latency Percentiles: state/cas ---
+Benchmarking state/cas/durability/none
+Benchmarking state/cas/durability/none: Warming up for 3.0000 s
+Benchmarking state/cas/durability/none: Collecting 100 samples in estimated 5.0045 s (2.3M iterations)
+Benchmarking state/cas/durability/none: Analyzing
+state/cas/durability/none
+                        time:   [2.1590 µs 2.3018 µs 2.6094 µs]
+                        thrpt:  [383.22 Kelem/s 434.45 Kelem/s 463.19 Kelem/s]
+                 change:
+                        time:   [-78.182% -44.894% +60.664%] (p = 0.70 > 0.05)
+                        thrpt:  [-37.758% +81.467% +358.34%]
+                        No change in performance detected.
+Found 4 outliers among 100 measurements (4.00%)
+  2 (2.00%) high mild
+  2 (2.00%) high severe
+  state/cas/none                                p50=2.16 µs      p95=2.29 µs      p99=2.88 µs      (n=1000)
+Benchmarking state/cas/durability/buffered
+Benchmarking state/cas/durability/buffered: Warming up for 3.0000 s
+Benchmarking state/cas/durability/buffered: Collecting 100 samples in estimated 5.0198 s (480k iterations)
+Benchmarking state/cas/durability/buffered: Analyzing
+state/cas/durability/buffered
+                        time:   [10.370 µs 10.476 µs 10.581 µs]
+                        thrpt:  [94.507 Kelem/s 95.452 Kelem/s 96.428 Kelem/s]
+                 change:
+                        time:   [-99.930% -99.924% -99.917%] (p = 0.00 < 0.05)
+                        thrpt:  [+120800% +131857% +142444%]
+                        Performance has improved.
+Found 11 outliers among 100 measurements (11.00%)
+  4 (4.00%) low severe
+  1 (1.00%) low mild
+  3 (3.00%) high mild
+  3 (3.00%) high severe
+  state/cas/buffered                            p50=3.62 µs      p95=5.56 µs      p99=6.63 µs      (n=1000)
+  state/cas/buffered                            appends/op=1.0  syncs/op=0.0  bytes/op=393  avg_sync=6344µs
+Benchmarking state/cas/durability/strict
+Benchmarking state/cas/durability/strict: Warming up for 3.0000 s
+Benchmarking state/cas/durability/strict: Collecting 100 samples in estimated 5.5628 s (900 iterations)
+Benchmarking state/cas/durability/strict: Analyzing
+state/cas/durability/strict
+                        time:   [6.1614 ms 6.1754 ms 6.1913 ms]
+                        thrpt:  [161.52  elem/s 161.93  elem/s 162.30  elem/s]
+                 change:
+                        time:   [-59.958% -59.529% -59.091%] (p = 0.00 < 0.05)
+                        thrpt:  [+144.45% +147.09% +149.74%]
+                        Performance has improved.
+Found 2 outliers among 100 measurements (2.00%)
+  2 (2.00%) high severe
+  state/cas/strict                              p50=6.17 ms      p95=6.41 ms      p99=13.13 ms     (n=1000)
+  state/cas/strict                              appends/op=1.0  syncs/op=1.0  bytes/op=388  avg_sync=6276µs
+
+     Running benches/vector.rs (target/release/deps/vector-715dce067e8c733c)
+Gnuplot not found, using plotters backend
+
+--- Latency Percentiles: vector/upsert ---
+=== Hardware ===
+CPU:    AMD Ryzen 7 7800X3D 8-Core Processor
+Cores:  16
+RAM:    61 GB
+OS:     linux (x86_64)
+================
+Benchmarking vector/upsert/durability/none
+Benchmarking vector/upsert/durability/none: Warming up for 3.0000 s
+Benchmarking vector/upsert/durability/none: Collecting 50 samples in estimated 5.0023 s (1.3M iterations)
+Benchmarking vector/upsert/durability/none: Analyzing
+vector/upsert/durability/none
+                        time:   [3.3328 µs 3.7598 µs 4.6943 µs]
+                        thrpt:  [213.02 Kelem/s 265.97 Kelem/s 300.04 Kelem/s]
+                 change:
+                        time:   [-17.784% -2.4464% +15.659%] (p = 0.80 > 0.05)
+                        thrpt:  [-13.539% +2.5078% +21.631%]
+                        No change in performance detected.
+Found 2 outliers among 50 measurements (4.00%)
+  2 (4.00%) high severe
+  vector/upsert/none                            p50=2.46 µs      p95=4.23 µs      p99=5.76 µs      (n=1000)
+Benchmarking vector/upsert/durability/buffered
+Benchmarking vector/upsert/durability/buffered: Warming up for 3.0000 s
+Benchmarking vector/upsert/durability/buffered: Collecting 50 samples in estimated 5.0064 s (300k iterations)
+Benchmarking vector/upsert/durability/buffered: Analyzing
+vector/upsert/durability/buffered
+                        time:   [14.085 µs 14.443 µs 14.975 µs]
+                        thrpt:  [66.778 Kelem/s 69.237 Kelem/s 70.996 Kelem/s]
+                 change:
+                        time:   [-99.905% -99.892% -99.873%] (p = 0.00 < 0.05)
+                        thrpt:  [+78380% +92890% +104657%]
+                        Performance has improved.
+Found 5 outliers among 50 measurements (10.00%)
+  1 (2.00%) low severe
+  1 (2.00%) low mild
+  1 (2.00%) high mild
+  2 (4.00%) high severe
+  vector/upsert/buffered                        p50=5.96 µs      p95=8.90 µs      p99=12.32 µs     (n=1000)
+  vector/upsert/buffered                        appends/op=1.0  syncs/op=0.0  bytes/op=1086  avg_sync=6252µs
+Benchmarking vector/upsert/durability/strict
+Benchmarking vector/upsert/durability/strict: Warming up for 3.0000 s
+
+Warning: Unable to complete 50 samples in 5.0s. You may wish to increase target time to 7.9s, enable flat sampling, or reduce sample count to 20.
+Benchmarking vector/upsert/durability/strict: Collecting 50 samples in estimated 7.9459 s (1275 iterations)
+Benchmarking vector/upsert/durability/strict: Analyzing
+vector/upsert/durability/strict
+                        time:   [6.1718 ms 6.1917 ms 6.2135 ms]
+                        thrpt:  [160.94  elem/s 161.51  elem/s 162.03  elem/s]
+                 change:
+                        time:   [-60.363% -59.992% -59.586%] (p = 0.00 < 0.05)
+                        thrpt:  [+147.44% +149.95% +152.29%]
+                        Performance has improved.
+Found 1 outliers among 50 measurements (2.00%)
+  1 (2.00%) high mild
+  vector/upsert/strict                          p50=6.13 ms      p95=6.29 ms      p99=6.61 ms      (n=200)
+  vector/upsert/strict                          appends/op=1.0  syncs/op=1.0  bytes/op=1079  avg_sync=6130µs
+
+
+--- Latency Percentiles: vector/search ---
+Benchmarking vector/search/durability/none
+Benchmarking vector/search/durability/none: Warming up for 3.0000 s
+Benchmarking vector/search/durability/none: Collecting 20 samples in estimated 5.4025 s (80 iterations)
+Benchmarking vector/search/durability/none: Analyzing
+vector/search/durability/none
+                        time:   [67.531 ms 67.871 ms 68.245 ms]
+                        thrpt:  [14.653  elem/s 14.734  elem/s 14.808  elem/s]
+                 change:
+                        time:   [-2.2343% -1.2704% -0.3283%] (p = 0.01 < 0.05)
+                        thrpt:  [+0.3294% +1.2867% +2.2853%]
+                        Change within noise threshold.
+Found 1 outliers among 20 measurements (5.00%)
+  1 (5.00%) high mild
+  vector/search/none                            p50=67.67 ms     p95=68.81 ms     p99=70.70 ms     (n=200)
+Benchmarking vector/search/durability/buffered
+Benchmarking vector/search/durability/buffered: Warming up for 3.0000 s
+Benchmarking vector/search/durability/buffered: Collecting 20 samples in estimated 5.4088 s (80 iterations)
+Benchmarking vector/search/durability/buffered: Analyzing
+vector/search/durability/buffered
+                        time:   [67.324 ms 67.646 ms 67.961 ms]
+                        thrpt:  [14.714  elem/s 14.783  elem/s 14.854  elem/s]
+                 change:
+                        time:   [-1.5596% -0.7445% +0.1425%] (p = 0.11 > 0.05)
+                        thrpt:  [-0.1423% +0.7501% +1.5843%]
+                        No change in performance detected.
+  vector/search/buffered                        p50=68.13 ms     p95=69.13 ms     p99=72.25 ms     (n=200)
+Benchmarking vector/search/durability/strict
+Benchmarking vector/search/durability/strict: Warming up for 3.0000 s
+Benchmarking vector/search/durability/strict: Collecting 20 samples in estimated 5.3652 s (80 iterations)
+Benchmarking vector/search/durability/strict: Analyzing
+vector/search/durability/strict
+                        time:   [66.866 ms 67.093 ms 67.330 ms]
+                        thrpt:  [14.852  elem/s 14.905  elem/s 14.955  elem/s]
+                 change:
+                        time:   [-5.1046% -4.4580% -3.7991%] (p = 0.00 < 0.05)
+                        thrpt:  [+3.9492% +4.6660% +5.3792%]
+                        Performance has improved.
+  vector/search/strict                          p50=67.01 ms     p95=68.31 ms     p99=72.13 ms     (n=200)
+
+
+--- Latency Percentiles: vector/get ---
+Benchmarking vector/get/durability/none
+Benchmarking vector/get/durability/none: Warming up for 3.0000 s
+Benchmarking vector/get/durability/none: Collecting 50 samples in estimated 5.0011 s (4.8M iterations)
+Benchmarking vector/get/durability/none: Analyzing
+vector/get/durability/none
+                        time:   [1.0386 µs 1.0444 µs 1.0546 µs]
+                        thrpt:  [948.24 Kelem/s 957.50 Kelem/s 962.82 Kelem/s]
+                 change:
+                        time:   [-7.3730% -3.4527% -0.0369%] (p = 0.08 > 0.05)
+                        thrpt:  [+0.0369% +3.5761% +7.9599%]
+                        No change in performance detected.
+Found 4 outliers among 50 measurements (8.00%)
+  2 (4.00%) low mild
+  1 (2.00%) high mild
+  1 (2.00%) high severe
+  vector/get/none                               p50=1.24 µs      p95=1.70 µs      p99=2.23 µs      (n=1000)
+Benchmarking vector/get/durability/buffered
+Benchmarking vector/get/durability/buffered: Warming up for 3.0000 s
+Benchmarking vector/get/durability/buffered: Collecting 50 samples in estimated 5.0001 s (4.8M iterations)
+Benchmarking vector/get/durability/buffered: Analyzing
+vector/get/durability/buffered
+                        time:   [1.0467 µs 1.0482 µs 1.0500 µs]
+                        thrpt:  [952.35 Kelem/s 953.97 Kelem/s 955.34 Kelem/s]
+                 change:
+                        time:   [-2.5886% -1.6995% -0.8002%] (p = 0.00 < 0.05)
+                        thrpt:  [+0.8067% +1.7289% +2.6573%]
+                        Change within noise threshold.
+Found 5 outliers among 50 measurements (10.00%)
+  3 (6.00%) low mild
+  2 (4.00%) high mild
+  vector/get/buffered                           p50=1.23 µs      p95=1.60 µs      p99=1.90 µs      (n=1000)
+Benchmarking vector/get/durability/strict
+Benchmarking vector/get/durability/strict: Warming up for 3.0000 s
+Benchmarking vector/get/durability/strict: Collecting 50 samples in estimated 5.0008 s (4.5M iterations)
+Benchmarking vector/get/durability/strict: Analyzing
+vector/get/durability/strict
+                        time:   [1.1022 µs 1.1049 µs 1.1077 µs]
+                        thrpt:  [902.77 Kelem/s 905.03 Kelem/s 907.25 Kelem/s]
+                 change:
+                        time:   [+6.9622% +7.5040% +8.0008%] (p = 0.00 < 0.05)
+                        thrpt:  [-7.4081% -6.9802% -6.5090%]
+                        Performance has regressed.
+Found 6 outliers among 50 measurements (12.00%)
+  2 (4.00%) low mild
+  3 (6.00%) high mild
+  1 (2.00%) high severe
+  vector/get/strict                             p50=1.22 µs      p95=1.59 µs      p99=1.94 µs      (n=1000)
+

@@ -180,3 +180,67 @@ fn overwrite_entire_document() {
     let val = db.json_get("doc", "v").unwrap();
     assert_eq!(val, Some(Value::Int(2)));
 }
+
+// =============================================================================
+// Version History (json_getv)
+// =============================================================================
+
+#[test]
+fn getv_returns_none_for_nonexistent_document() {
+    let db = db();
+    assert_eq!(db.json_getv("ghost").unwrap(), None);
+}
+
+#[test]
+fn getv_single_version() {
+    let db = db();
+    let doc = obj(&[("name", Value::String("Alice".into()))]);
+    db.json_set("user:1", "$", doc.clone()).unwrap();
+
+    let history = db.json_getv("user:1").unwrap().unwrap();
+    assert_eq!(history.len(), 1);
+    assert!(history[0].version > 0);
+}
+
+#[test]
+fn getv_multiple_versions_newest_first() {
+    let db = db();
+    db.json_set("doc", "$", obj(&[("v", Value::Int(1))])).unwrap();
+    db.json_set("doc", "$", obj(&[("v", Value::Int(2))])).unwrap();
+    db.json_set("doc", "$", obj(&[("v", Value::Int(3))])).unwrap();
+
+    let history = db.json_getv("doc").unwrap().unwrap();
+    assert_eq!(history.len(), 3);
+    // Newest first — each version is the whole document
+    assert!(history[0].version > history[1].version);
+    assert!(history[1].version > history[2].version);
+}
+
+#[test]
+fn getv_tracks_path_level_updates() {
+    let db = db();
+    let doc = obj(&[
+        ("name", Value::String("Alice".into())),
+        ("age", Value::Int(30)),
+    ]);
+    db.json_set("user:1", "$", doc).unwrap();
+    // Update just a nested field
+    db.json_set("user:1", "age", Value::Int(31)).unwrap();
+
+    let history = db.json_getv("user:1").unwrap().unwrap();
+    assert_eq!(history.len(), 2);
+    assert!(history[0].version > history[1].version);
+}
+
+#[test]
+fn getv_independent_documents() {
+    let db = db();
+    db.json_set("a", "$", obj(&[("n", Value::Int(1))])).unwrap();
+    db.json_set("a", "$", obj(&[("n", Value::Int(2))])).unwrap();
+    db.json_set("b", "$", obj(&[("n", Value::Int(10))])).unwrap();
+
+    let ha = db.json_getv("a").unwrap().unwrap();
+    let hb = db.json_getv("b").unwrap().unwrap();
+    assert_eq!(ha.len(), 2);
+    assert_eq!(hb.len(), 1);
+}

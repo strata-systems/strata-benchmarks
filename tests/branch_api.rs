@@ -251,7 +251,6 @@ fn export_empty_branch() {
 }
 
 #[test]
-#[ignore] // BUG: export scans wrong namespace — see strata-core#831
 fn export_branch_with_data() {
     let dir = tempfile::tempdir().unwrap();
     let db_path = dir.path().join("db");
@@ -298,7 +297,6 @@ fn validate_nonexistent_path_fails() {
 }
 
 #[test]
-#[ignore] // BUG: export scans wrong namespace — see strata-core#831
 fn import_into_new_database() {
     let dir = tempfile::tempdir().unwrap();
 
@@ -342,7 +340,6 @@ fn import_duplicate_branch_fails() {
 }
 
 #[test]
-#[ignore] // BUG: export scans wrong namespace — see strata-core#831
 fn import_kv_data_roundtrip() {
     let dir = tempfile::tempdir().unwrap();
 
@@ -382,7 +379,6 @@ fn import_kv_data_roundtrip() {
 }
 
 #[test]
-#[ignore] // BUG: export scans wrong namespace — see strata-core#831
 fn import_multi_primitive_roundtrip() {
     let dir = tempfile::tempdir().unwrap();
 

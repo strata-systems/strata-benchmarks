@@ -218,3 +218,80 @@ fn many_keys() {
     let keys = db.kv_list(None).unwrap();
     assert_eq!(keys.len(), 1000);
 }
+
+// =============================================================================
+// Version History (kv_getv)
+// =============================================================================
+
+#[test]
+fn getv_returns_none_for_nonexistent_key() {
+    let db = db();
+    assert_eq!(db.kv_getv("ghost").unwrap(), None);
+}
+
+#[test]
+fn getv_single_version() {
+    let db = db();
+    db.kv_put("key", 1i64).unwrap();
+
+    let history = db.kv_getv("key").unwrap().unwrap();
+    assert_eq!(history.len(), 1);
+    assert_eq!(history[0].value, Value::Int(1));
+    assert!(history[0].version > 0);
+    assert!(history[0].timestamp > 0);
+}
+
+#[test]
+fn getv_multiple_versions_newest_first() {
+    let db = db();
+    db.kv_put("key", 1i64).unwrap();
+    db.kv_put("key", 2i64).unwrap();
+    db.kv_put("key", 3i64).unwrap();
+
+    let history = db.kv_getv("key").unwrap().unwrap();
+    assert_eq!(history.len(), 3);
+    // Newest first
+    assert_eq!(history[0].value, Value::Int(3));
+    assert_eq!(history[1].value, Value::Int(2));
+    assert_eq!(history[2].value, Value::Int(1));
+}
+
+#[test]
+fn getv_versions_have_increasing_version_numbers() {
+    let db = db();
+    db.kv_put("key", "a").unwrap();
+    db.kv_put("key", "b").unwrap();
+    db.kv_put("key", "c").unwrap();
+
+    let history = db.kv_getv("key").unwrap().unwrap();
+    // Newest first → versions should be decreasing
+    assert!(history[0].version > history[1].version);
+    assert!(history[1].version > history[2].version);
+}
+
+#[test]
+fn getv_preserves_type_changes() {
+    let db = db();
+    db.kv_put("key", "string").unwrap();
+    db.kv_put("key", 42i64).unwrap();
+    db.kv_put("key", true).unwrap();
+
+    let history = db.kv_getv("key").unwrap().unwrap();
+    assert_eq!(history.len(), 3);
+    assert_eq!(history[0].value, Value::Bool(true));
+    assert_eq!(history[1].value, Value::Int(42));
+    assert_eq!(history[2].value, Value::String("string".into()));
+}
+
+#[test]
+fn getv_independent_keys_have_separate_histories() {
+    let db = db();
+    db.kv_put("a", 1i64).unwrap();
+    db.kv_put("a", 2i64).unwrap();
+    db.kv_put("b", 10i64).unwrap();
+
+    let history_a = db.kv_getv("a").unwrap().unwrap();
+    let history_b = db.kv_getv("b").unwrap().unwrap();
+    assert_eq!(history_a.len(), 2);
+    assert_eq!(history_b.len(), 1);
+}
